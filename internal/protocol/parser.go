@@ -16,7 +16,7 @@ func NewParser(r io.Reader) *Parser {
 	return &Parser{reader: bufio.NewReader(r)}
 }
 
-func (p *Parser) Parse() (any, error) {
+func (p *Parser) Parse() (*RESPValue, error) {
 	prefix, err := p.reader.ReadByte()
 	if err != nil {
 		return nil, err
@@ -32,31 +32,37 @@ func (p *Parser) Parse() (any, error) {
 		case '$':
 			return p.readBulkString()
 		case ':':
-			return "ReadInteger", nil
+			return p.readInteger()
 		default:
 			return nil, fmt.Errorf("unknown prefix: %c", prefix)
 	}
 }
 
-func (p *Parser) readSimpleString() (string, error){
+func (p *Parser) readSimpleString() (*RESPValue, error){
 	str, err :=p.reader.ReadString('\n')
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return strings.TrimSuffix(str, "\r\n"), nil
-	 
+	str = strings.TrimSuffix(str, "\r\n")
+	return &RESPValue{
+		Type: SimpleString,
+		Str: str,
+	}, nil
 }
 
-func (p *Parser) readError() (string, error){
+func (p *Parser) readError() (*RESPValue, error){
 	str, err :=p.reader.ReadString('\n')
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return strings.TrimSuffix(str, "\r\n"), nil
-	
+	str = strings.TrimSuffix(str, "\r\n")
+	return &RESPValue{
+		Type: Error,
+		Str: str,
+	}, nil	
 }
 
-func (p *Parser) readArray()(any, error){
+func (p *Parser) readArray()(*RESPValue, error){
 	line, err := p.reader.ReadString('\n')
 	if err != nil {
 		return nil, err
@@ -67,8 +73,7 @@ func (p *Parser) readArray()(any, error){
 		return nil, err
 	}
 
-	elements := make([]any, 0, arrLen)
-
+	elements := make([]*RESPValue, 0, arrLen)
 	for i:= 0; i < arrLen; i++ {
 		elem, err := p.Parse()
 		if err != nil {
@@ -76,41 +81,53 @@ func (p *Parser) readArray()(any, error){
 		}
 		elements = append(elements, elem)
 	}
-
-	return elements, nil
+	return &RESPValue{
+		Type: Array,
+		Array: elements,
+	}, nil
 }
 
-func (p *Parser) readBulkString() (string, error){
+func (p *Parser) readBulkString() (*RESPValue, error){
 	line, err := p.reader.ReadString('\n')
 	if err != nil {
-    	return "", err
+    	return nil, err
 	}
 	line = strings.TrimSuffix(line, "\r\n")
 	readLen, err := strconv.Atoi(line)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if readLen == -1 {
-    	return "", nil
+    	return nil, nil
 	}
 
 	buf := make([]byte, readLen+2)
 	_, err = p.reader.Read(buf)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	str := string(buf[:readLen])
-	return str, nil
+	return &RESPValue{
+		Type: BulkString,
+		Str: str,
+	}, nil
 }
 
-func (p *Parser) readInteger() (int, error){
+func (p *Parser) readInteger() (*RESPValue, error){
 	line, err := p.reader.ReadString('\n')
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	line = strings.TrimSuffix(line, "\r\n")
-	return strconv.Atoi(line)
+	n, err := strconv.Atoi(line)
+	if err != nil {
+		return nil, err
+	}
+	return &RESPValue{
+		Type: Integer,
+		Int: n,
+	}, nil
 }
