@@ -43,8 +43,8 @@ func (p *Parser) readSimpleString() (string, error){
 	if err != nil {
 		return "", err
 	}
-	str = strings.TrimSuffix(str, "\r\n")
-	return str, err
+	return strings.TrimSuffix(str, "\r\n"), nil
+	 
 }
 
 func (p *Parser) readError() (string, error){
@@ -52,8 +52,32 @@ func (p *Parser) readError() (string, error){
 	if err != nil {
 		return "", err
 	}
-	str = strings.TrimSuffix(str, "\r\n")
-	return str, err
+	return strings.TrimSuffix(str, "\r\n"), nil
+	
+}
+
+func (p *Parser) readArray()(any, error){
+	line, err := p.reader.ReadString('\n')
+	if err != nil {
+		return nil, err
+	}
+	line = strings.TrimSuffix(line, "\r\n")
+	arrLen, err := strconv.Atoi(line)
+	if err != nil {
+		return nil, err
+	}
+
+	elements := make([]any, 0, arrLen)
+
+	for i:= 0; i < arrLen; i++ {
+		elem, err := p.Parse()
+		if err != nil {
+			return nil, err
+		}
+		elements = append(elements, elem)
+	}
+
+	return elements, nil
 }
 
 func (p *Parser) readBulkString() (string, error){
@@ -81,26 +105,12 @@ func (p *Parser) readBulkString() (string, error){
 	return str, nil
 }
 
-func (p *Parser) readArray()(any, error){
+func (p *Parser) readInteger() (int, error){
 	line, err := p.reader.ReadString('\n')
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
+
 	line = strings.TrimSuffix(line, "\r\n")
-	arrLen, err := strconv.Atoi(line)
-	if err != nil {
-		return nil, err
-	}
-
-	elements := make([]any, 0, arrLen)
-
-	for i:= 0; i < arrLen; i++ {
-		elem, err := p.Parse()
-		if err != nil {
-			return nil, err
-		}
-		elements = append(elements, elem)
-	}
-
-	return elements, nil
+	return strconv.Atoi(line)
 }
