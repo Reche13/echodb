@@ -26,13 +26,13 @@ func (p *Parser) Parse() (any, error) {
 		case '+':
 			return p.readSimpleString()
 		case '-':
-			return "ReadError", nil
+			return p.readError()
+		case '*':
+			return p.readArray()
 		case '$':
-			return "ReadBulkString", nil
+			return p.readBulkString()
 		case ':':
 			return "ReadInteger", nil
-		case '*':
-			return "ReadArray", nil
 		default:
 			return nil, fmt.Errorf("unknown prefix: %c", prefix)
 	}
@@ -63,6 +63,9 @@ func (p *Parser) readBulkString() (string, error){
 	}
 	line = strings.TrimSuffix(line, "\r\n")
 	readLen, err := strconv.Atoi(line)
+	if err != nil {
+		return "", err
+	}
 
 	if readLen == -1 {
     	return "", nil
@@ -79,5 +82,25 @@ func (p *Parser) readBulkString() (string, error){
 }
 
 func (p *Parser) readArray()(any, error){
-	return nil, nil
+	line, err := p.reader.ReadString('\n')
+	if err != nil {
+		return nil, err
+	}
+	line = strings.TrimSuffix(line, "\r\n")
+	arrLen, err := strconv.Atoi(line)
+	if err != nil {
+		return nil, err
+	}
+
+	elements := make([]any, 0, arrLen)
+
+	for i:= 0; i < arrLen; i++ {
+		elem, err := p.Parse()
+		if err != nil {
+			return nil, err
+		}
+		elements = append(elements, elem)
+	}
+
+	return elements, nil
 }

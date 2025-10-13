@@ -75,6 +75,8 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot listen on port :6380")
 	}
+	log.Println("Listening on port :6380")
+
 	defer l.Close()
 
 	conn, err := l.Accept()
@@ -83,6 +85,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer conn.Close()
+	log.Printf("connected to client: %s", conn.RemoteAddr())
 
 	for {
 		p := protocol.NewParser(conn)
