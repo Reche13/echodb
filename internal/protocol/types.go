@@ -11,8 +11,8 @@ const (
 )
 
 type RESPValue struct {
-	Type RESPType
-	Str string
-	Int int
+	Type  RESPType
+	Str   string
+	Int   int64
 	Array []*RESPValue
 }

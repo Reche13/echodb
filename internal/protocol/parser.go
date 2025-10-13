@@ -122,7 +122,7 @@ func (p *Parser) readInteger() (*RESPValue, error){
 	}
 
 	line = strings.TrimSuffix(line, "\r\n")
-	n, err := strconv.Atoi(line)
+	n, err := strconv.ParseInt(line, 10, 64)
 	if err != nil {
 		return nil, err
 	}
