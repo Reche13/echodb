@@ -7,6 +7,8 @@ import (
 	"net"
 	"os"
 	"strconv"
+
+	"github.com/reche13/echodb/internal/protocol"
 )
 
 type ValueType string
@@ -83,9 +85,14 @@ func main() {
 	defer conn.Close()
 
 	for {
-		v := Value{typ: ARRAY}
-		v.readArray(conn)
-		fmt.Println(v.array)
+		p := protocol.NewParser(conn)
+		val, err := p.Parse()
+		if err != nil {
+			log.Fatal("failed to parse")
+			break
+		}
+		
+		fmt.Println(val)
 
 		conn.Write([]byte("+OK\r\n"))
 	}
