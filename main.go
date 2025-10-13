@@ -91,12 +91,18 @@ func main() {
 		p := protocol.NewParser(conn)
 		val, err := p.Parse()
 		if err != nil {
-			log.Fatal("failed to parse")
+			log.Fatal("failed to parse", err.Error())
+			break
+		}
+
+		s := protocol.NewSerializer()
+		out, err := s.Serialize(val)
+		if err != nil {
+			log.Fatal("failed to serialize", err.Error())
 			break
 		}
 		
-		fmt.Println(val)
-
-		conn.Write([]byte("+OK\r\n"))
+		fmt.Printf("%+v\n", val)
+		conn.Write(out)
 	}
 }
