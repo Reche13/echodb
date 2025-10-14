@@ -27,3 +27,10 @@ func NewNullBulkString() *RESPValue {
 		Str: "",
 	}
 }
+
+func NewInteger(n int64) *RESPValue {
+	return &RESPValue{
+		Type: Integer,
+		Int: n,
+	}
+}
