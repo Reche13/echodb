@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/reche13/echodb/internal/commands"
 	"github.com/reche13/echodb/internal/protocol"
 )
 
@@ -41,11 +42,13 @@ func (s *Server) handleConnection(conn net.Conn) {
 	defer conn.Close()
 	for {
 		p := protocol.NewParser(conn)
-		val, err := p.Parse()
+		args, err := p.Parse()
 		if err != nil {
 			log.Println("failed to parse:", err)
 			return
 		}
+
+		val := commands.Execute(args)
 
 		sr := protocol.NewSerializer()
 		out, err := sr.Serialize(val)
@@ -54,7 +57,6 @@ func (s *Server) handleConnection(conn net.Conn) {
 			return
 		}
 
-		fmt.Printf("%+v\n", val)
 		conn.Write(out)
 	}
 }
