@@ -16,7 +16,7 @@ func Ping(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue {
 
 	str, ok := args[0].GetString()
 	if !ok {
-		return protocol.NewError("ERR invalid argument for PING")
+		return protocol.NewError("ERR invalid argument for 'PING' command")
 	}
 
 	return protocol.NewSimpleString(str)
