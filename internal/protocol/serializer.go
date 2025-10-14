@@ -32,6 +32,9 @@ func (s *Serializer) serializeValue(rv *RESPValue) error {
 		case Integer:
 			return s.writeInteger(rv.Int)
 		case BulkString:
+			if rv.Str == "" {
+				return s.writeNullBulkString()
+			}
 			return s.writeBulkString(rv.Str)
 		case Array:
 			return s.writeArray(rv.Array)
@@ -63,6 +66,11 @@ func (s *Serializer) writeInteger(v int64) error {
 
 func (s *Serializer) writeBulkString(v string) error {
 	_, err := fmt.Fprintf(s.buffer, "$%d\r\n%s\r\n", len(v), v)
+	return err
+}
+
+func (s *Serializer) writeNullBulkString() error {
+	_, err := fmt.Fprintf(s.buffer, "$-1\r\n")
 	return err
 }
 

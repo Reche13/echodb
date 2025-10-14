@@ -14,3 +14,16 @@ func NewError(s string) *RESPValue {
 	}
 }
 
+func NewBulkString(s string) *RESPValue {
+	return &RESPValue{
+		Type: BulkString,
+		Str: s,
+	}
+}
+
+func NewNullBulkString() *RESPValue {
+	return &RESPValue{
+		Type: BulkString,
+		Str: "",
+	}
+}

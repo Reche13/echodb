@@ -99,7 +99,7 @@ func (p *Parser) readBulkString() (*RESPValue, error){
 	}
 
 	if readLen == -1 {
-    	return nil, nil
+    	return NewNullBulkString(), nil
 	}
 
 	buf := make([]byte, readLen+2)
