@@ -1,12 +1,15 @@
 package commands
 
-import "github.com/reche13/echodb/internal/protocol"
+import (
+	"github.com/reche13/echodb/internal/protocol"
+	"github.com/reche13/echodb/internal/store"
+)
 
 func init() {
 	Register("ECHO", Echo)
 }
 
-func Echo(args []*protocol.RESPValue) *protocol.RESPValue {
+func Echo(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue {
 	if len(args) != 1 {
 		return protocol.NewError("ERR wrong number of arguments for 'ECHO' command")
 	}

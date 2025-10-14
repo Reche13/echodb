@@ -4,9 +4,10 @@ import (
 	"strings"
 
 	"github.com/reche13/echodb/internal/protocol"
+	"github.com/reche13/echodb/internal/store"
 )
 
-type CommandFunc func(args []*protocol.RESPValue) *protocol.RESPValue
+type CommandFunc func(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue
 
 var registry = map[string]CommandFunc{}
 
@@ -14,7 +15,7 @@ func Register(name string, fn CommandFunc) {
 	registry[strings.ToUpper(name)] = fn
 }
 
-func Execute(command *protocol.RESPValue) *protocol.RESPValue {
+func Execute(store *store.Store, command *protocol.RESPValue) *protocol.RESPValue {
 	args, ok := command.GetArray()
 	if !ok || len(args) == 0 {
 		return protocol.NewError("ERR empty command")
@@ -30,5 +31,5 @@ func Execute(command *protocol.RESPValue) *protocol.RESPValue {
 		return protocol.NewError("ERR unknown command '" + cmdName + "'")
 	}
 
-	return fn(args[1:])
+	return fn(store, args[1:])
 }

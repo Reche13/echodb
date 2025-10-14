@@ -1,12 +1,15 @@
 package commands
 
-import "github.com/reche13/echodb/internal/protocol"
+import (
+	"github.com/reche13/echodb/internal/protocol"
+	"github.com/reche13/echodb/internal/store"
+)
 
 func init() {
 	Register("PING", Ping)
 }
 
-func Ping(args []*protocol.RESPValue) *protocol.RESPValue {
+func Ping(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue {
 	if len(args) == 0 {
 		return protocol.NewSimpleString("PONG")
 	}

@@ -7,14 +7,19 @@ import (
 
 	"github.com/reche13/echodb/internal/commands"
 	"github.com/reche13/echodb/internal/protocol"
+	"github.com/reche13/echodb/internal/store"
 )
 
 type Server struct {
 	Addr string
+	store *store.Store
 }
 
-func New(addr string) *Server {
-	return &Server{Addr: addr}
+func New(addr string, store *store.Store) *Server {
+	return &Server{
+		Addr: addr,
+		store: store,
+	}
 }
 
 func (s *Server) Start() error {
@@ -48,7 +53,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 			return
 		}
 
-		val := commands.Execute(args)
+		val := commands.Execute(s.store ,args)
 
 		sr := protocol.NewSerializer()
 		out, err := sr.Serialize(val)
