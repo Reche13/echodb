@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 
 	"github.com/reche13/echodb/internal/commands"
 	"github.com/reche13/echodb/internal/protocol"
@@ -13,6 +14,14 @@ import (
 type Server struct {
 	Addr string
 	store *store.Store
+	clients map[net.Conn]*Client
+	mu sync.RWMutex
+}
+
+type Client struct {
+	conn net.Conn
+	parser *protocol.Parser
+	serializer *protocol.Serializer
 }
 
 func New(addr string, store *store.Store) *Server {
@@ -45,9 +54,25 @@ func (s *Server) Start() error {
 
 func (s *Server) handleConnection(conn net.Conn) {
 	defer conn.Close()
+
+	client := &Client{
+		conn: conn,
+		parser: protocol.NewParser(conn),
+		serializer: protocol.NewSerializer(),
+	}
+
+	s.mu.Lock()
+	s.clients[conn] = client
+	s.mu.Unlock()
+
+	defer func(){
+		s.mu.Lock()
+		delete(s.clients, conn)
+		s.mu.Unlock()
+	}()
+
 	for {
-		p := protocol.NewParser(conn)
-		args, err := p.Parse()
+		args, err := client.parser.Parse()
 		if err != nil {
 			log.Println("failed to parse:", err)
 			return
@@ -55,13 +80,11 @@ func (s *Server) handleConnection(conn net.Conn) {
 
 		val := commands.Execute(s.store ,args)
 
-		sr := protocol.NewSerializer()
-		out, err := sr.Serialize(val)
+		out, err := client.serializer.Serialize(val)
 		if err != nil {
 			log.Println("failed to serialize:", err)
 			return
 		}
-
-		conn.Write(out)
+		client.conn.Write(out)
 	}
 }
