@@ -1,0 +1,90 @@
+package store
+
+func (s *Store) LPush(key string, values ...string) int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	val, ok := s.data[key]
+	var list []string
+	if ok {
+		if val.Type != ListType {
+			return -1
+		}
+		list = val.Data.([]string)
+	}
+
+	list = append(values, list...)
+	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: val.ExpiresAt}
+
+	return len(list)
+}
+
+func (s *Store) LPop(key string, count int) []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if count <= 0 {
+		return nil
+	}
+
+	val, ok := s.data[key]
+	if !ok || val.Type != ListType {
+		return nil
+	}
+
+	list := val.Data.([]string)
+	if len(list) == 0 {
+		return nil
+	}
+
+	if count > len(list) {
+		count = len(list)
+	}
+
+	popped := list[:count]
+	list = list[count:]
+	s.data[key] = Value{Type: ListType, Data: list,ExpiresAt: val.ExpiresAt}
+	
+	return popped
+}
+
+func (s *Store) LRange(key string, start int, stop int) []string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	val, ok := s.data[key]
+	if !ok || val.Type != ListType {
+		return nil
+	}
+
+	list := val.Data.([]string)
+	length:= len(list)
+
+	if length == 0 {
+		return nil
+	}
+
+	if start < 0 {
+		start = length + start
+	}
+
+	if stop < 0 {
+		stop = length + stop
+	}
+
+	if start < 0 {
+		start = 0
+	}
+
+	if stop >= length {
+		stop = length - 1
+	}
+
+	if start > stop || start >= length {
+		return nil
+	}
+
+	sublist:= list[start : stop+1]
+
+	return sublist
+}
