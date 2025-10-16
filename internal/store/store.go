@@ -2,28 +2,55 @@ package store
 
 import "sync"
 
+type ValueType string
+
+const (
+    StringType ValueType = "string"
+    ListType ValueType = "list"
+)
+
+type Value struct {
+    Type ValueType
+    Data any
+}
+
 type Store struct {
-	data map[string]string
+	data map[string]Value
 	mu sync.RWMutex
 }
 
 func New() *Store {
 	return &Store{
-		data: make(map[string]string),
+		data: make(map[string]Value),
 	}
+}
+
+func (s *Store) TypeOf(key string) ValueType {
+    s.mu.RLock()
+    defer s.mu.RUnlock()
+
+    val, ok := s.data[key]
+    if !ok {
+        return ""
+    }
+
+    return val.Type
 }
 
 func (s *Store) Set(key, value string) {
     s.mu.Lock()
     defer s.mu.Unlock()
-    s.data[key] = value
+    s.data[key] = Value{Type: StringType, Data: value}
 }
 
 func (s *Store) Get(key string) (string, bool) {
     s.mu.RLock()
     defer s.mu.RUnlock()
     val, ok := s.data[key]
-    return val, ok
+    if !ok || val.Type != StringType {
+        return "", false
+    }
+    return val.Data.(string), ok
 }
 
 func (s *Store) Del(keys ...string) int {
