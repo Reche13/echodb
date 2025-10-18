@@ -34,3 +34,10 @@ func NewInteger(n int64) *RESPValue {
 		Int: n,
 	}
 }
+
+func NewArray(arr []*RESPValue) *RESPValue {
+	return &RESPValue{
+		Type: Array,
+		Array: arr,
+	}
+}

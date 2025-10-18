@@ -13,6 +13,11 @@ func (s *Store) LPush(key string, values ...string) int {
 		list = val.Data.([]string)
 	}
 
+	for i := len(values)/2 - 1; i >= 0; i-- {
+		opp := len(values) -1 - i
+		values[i], values[opp] = values[opp], values[i]
+	}
+
 	list = append(values, list...)
 	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: val.ExpiresAt}
 
@@ -54,14 +59,14 @@ func (s *Store) LRange(key string, start int, stop int) []string {
 
 	val, ok := s.data[key]
 	if !ok || val.Type != ListType {
-		return nil
+		return []string{}
 	}
 
 	list := val.Data.([]string)
 	length:= len(list)
 
 	if length == 0 {
-		return nil
+		return []string{}
 	}
 
 	if start < 0 {
@@ -81,7 +86,7 @@ func (s *Store) LRange(key string, start int, stop int) []string {
 	}
 
 	if start > stop || start >= length {
-		return nil
+		return []string{}
 	}
 
 	sublist:= list[start : stop+1]
