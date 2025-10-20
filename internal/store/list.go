@@ -93,3 +93,52 @@ func (s *Store) LRange(key string, start int, stop int) []string {
 
 	return sublist
 }
+
+
+func (s *Store) RPush(key string, values ...string) int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	val, ok := s.data[key]
+	var list []string
+	if ok {
+		if val.Type != ListType {
+			return -1
+		}
+		list = val.Data.([]string)
+	}
+
+	list = append(list, values...)
+	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: val.ExpiresAt}
+
+	return len(list)
+}
+
+func (s *Store) RPop(key string, count int) []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if count <= 0 {
+		return nil
+	}
+
+	val, ok := s.data[key]
+	if !ok || val.Type != ListType {
+		return nil
+	}
+
+	list := val.Data.([]string)
+	if len(list) == 0 {
+		return nil
+	}
+
+	if count > len(list) {
+		count = len(list)
+	}
+	start := len(list) - count
+	popped := list[start:]
+	list = list[:start]
+	s.data[key] = Value{Type: ListType, Data: list,ExpiresAt: val.ExpiresAt}
+	
+	return popped
+}
