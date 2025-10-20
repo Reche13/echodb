@@ -147,3 +147,18 @@ func (s *Store) RPop(key string, count int) []string {
 	
 	return popped
 }
+
+func (s *Store) LLen(key string) int {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	val, ok := s.data[key]
+	if !ok {
+		return 0
+	}
+	if val.Type != ListType {
+		return -1
+	}
+	list, _ := val.Data.([]string)
+	return len(list)
+}
