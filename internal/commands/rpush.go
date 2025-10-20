@@ -28,10 +28,9 @@ func RPush(store *store.Store, args []*protocol.RESPValue)*protocol.RESPValue{
 		values = append(values, val)
 	}
 
-	newLen := store.RPush(key, values...)
-
-	if newLen == -1 {
-		return protocol.NewError("WRONGTYPE Operation against a key holding the wrong kind of value")
+	newLen, err := store.RPush(key, values...)
+	if err != nil {
+		return protocol.NewError(err.Error())
 	}
 
 	return protocol.NewInteger(int64(newLen))

@@ -29,7 +29,11 @@ func LRange(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue 
 		return protocol.NewError("ERR value is not an integer or out of range")
 	}
 
-	values := store.LRange(key, start, stop)
+	values, err := store.LRange(key, start, stop)
+	if err != nil {
+		return protocol.NewError(err.Error())
+	}
+	
 	if values == nil {
 		return protocol.NewArray(nil)
 	}

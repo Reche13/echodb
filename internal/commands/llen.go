@@ -19,10 +19,10 @@ func LLen(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue {
 		return protocol.NewError("ERR invalid key for 'LLEN' command")
 	}
 
-	length := store.LLen(key)
+	length, err := store.LLen(key)
 
-	if length == -1 {
-		return protocol.NewError("WRONGTYPE Operation against a key holding the wrong kind of value")
+	if err != nil {
+		return protocol.NewError(err.Error())
 	}
 
 	return protocol.NewInteger(int64(length))

@@ -1,16 +1,17 @@
 package store
 
-func (s *Store) LPush(key string, values ...string) int {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+import "fmt"
 
-	val, ok := s.data[key]
+func (s *Store) LPush(key string, values ...string) (int, error) {
+	val, ok := s.GetValueOrExpire(key)
 	var list []string
+	expiresAt := int64(0)
 	if ok {
 		if val.Type != ListType {
-			return -1
+			return 0, fmt.Errorf("WRONGTYPE Operation against a key holding the wrong kind of value")
 		}
 		list = val.Data.([]string)
+		expiresAt = val.ExpiresAt
 	}
 
 	for i := len(values)/2 - 1; i >= 0; i-- {
@@ -19,27 +20,31 @@ func (s *Store) LPush(key string, values ...string) int {
 	}
 
 	list = append(values, list...)
-	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: val.ExpiresAt}
 
-	return len(list)
-}
-
-func (s *Store) LPop(key string, count int) []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: expiresAt}
 
-	if count <= 0 {
-		return nil
+	return len(list), nil
+}
+
+func (s *Store) LPop(key string, count int) ([]string, error) {
+	val, ok := s.GetValueOrExpire(key)
+	if !ok {
+		return []string{}, nil
 	}
 
-	val, ok := s.data[key]
-	if !ok || val.Type != ListType {
-		return nil
+	if val.Type != ListType {
+		return nil, fmt.Errorf("WRONGTYPE Operation against a key holding the wrong kind of value")
+	}
+
+	if count <= 0 {
+		return []string{}, nil
 	}
 
 	list := val.Data.([]string)
 	if len(list) == 0 {
-		return nil
+		return []string{}, nil
 	}
 
 	if count > len(list) {
@@ -48,25 +53,29 @@ func (s *Store) LPop(key string, count int) []string {
 
 	popped := list[:count]
 	list = list[count:]
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	s.data[key] = Value{Type: ListType, Data: list,ExpiresAt: val.ExpiresAt}
 	
-	return popped
+	return popped, nil
 }
 
-func (s *Store) LRange(key string, start int, stop int) []string {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+func (s *Store) LRange(key string, start int, stop int) ([]string, error) {
+	val, ok := s.GetValueOrExpire(key)
+	if !ok {
+		return []string{}, nil
+	}
 
-	val, ok := s.data[key]
-	if !ok || val.Type != ListType {
-		return []string{}
+	if val.Type != ListType {
+		return nil, fmt.Errorf("WRONGTYPE Operation against a key holding the wrong kind of value")
 	}
 
 	list := val.Data.([]string)
 	length:= len(list)
 
 	if length == 0 {
-		return []string{}
+		return []string{}, nil
 	}
 
 	if start < 0 {
@@ -86,50 +95,52 @@ func (s *Store) LRange(key string, start int, stop int) []string {
 	}
 
 	if start > stop || start >= length {
-		return []string{}
+		return []string{}, nil
 	}
 
 	sublist:= list[start : stop+1]
 
-	return sublist
+	return sublist, nil
 }
 
-
-func (s *Store) RPush(key string, values ...string) int {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	val, ok := s.data[key]
+func (s *Store) RPush(key string, values ...string) (int, error) {
+	val, ok := s.GetValueOrExpire(key)
 	var list []string
+	expiresAt := int64(0)
 	if ok {
 		if val.Type != ListType {
-			return -1
+			return 0, fmt.Errorf("WRONGTYPE Operation against a key holding the wrong kind of value")
 		}
 		list = val.Data.([]string)
+		expiresAt = val.ExpiresAt
 	}
 
 	list = append(list, values...)
-	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: val.ExpiresAt}
 
-	return len(list)
-}
-
-func (s *Store) RPop(key string, count int) []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.data[key] = Value{Type: ListType, Data: list, ExpiresAt: expiresAt}
 
-	if count <= 0 {
-		return nil
+	return len(list), nil
+}
+
+func (s *Store) RPop(key string, count int) ([]string, error) {
+	val, ok := s.GetValueOrExpire(key)
+	if !ok {
+		return []string{}, nil
 	}
 
-	val, ok := s.data[key]
-	if !ok || val.Type != ListType {
-		return nil
+	if val.Type != ListType {
+		return nil, fmt.Errorf("WRONGTYPE Operation against a key holding the wrong kind of value")
+	}
+
+	if count <= 0 {
+		return []string{}, nil
 	}
 
 	list := val.Data.([]string)
 	if len(list) == 0 {
-		return nil
+		return []string{}, nil
 	}
 
 	if count > len(list) {
@@ -143,22 +154,22 @@ func (s *Store) RPop(key string, count int) []string {
 	}
 
 	list = list[:start]
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	s.data[key] = Value{Type: ListType, Data: list,ExpiresAt: val.ExpiresAt}
 	
-	return popped
+	return popped, nil
 }
 
-func (s *Store) LLen(key string) int {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-
-	val, ok := s.data[key]
+func (s *Store) LLen(key string) (int, error) {
+	val, ok := s.GetValueOrExpire(key)
 	if !ok {
-		return 0
+		return 0, nil
 	}
 	if val.Type != ListType {
-		return -1
+		return 0, fmt.Errorf("WRONGTYPE Operation against a key holding the wrong kind of value")
 	}
 	list, _ := val.Data.([]string)
-	return len(list)
+	return len(list), nil
 }

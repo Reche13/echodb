@@ -36,7 +36,10 @@ func LPop(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue {
 		count = n
 	}
 
-	values := store.LPop(key, count)
+	values, err := store.LPop(key, count)
+	if err != nil {
+		return protocol.NewError(err.Error())
+	}
 
 	if len(values) == 0 {
 		return protocol.NewArray(nil)
