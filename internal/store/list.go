@@ -136,7 +136,12 @@ func (s *Store) RPop(key string, count int) []string {
 		count = len(list)
 	}
 	start := len(list) - count
-	popped := list[start:]
+
+	popped := make([]string, count)
+	for i := 0; i < count; i++ {
+		popped[i] = list[len(list)-1-i]
+	}
+
 	list = list[:start]
 	s.data[key] = Value{Type: ListType, Data: list,ExpiresAt: val.ExpiresAt}
 	
