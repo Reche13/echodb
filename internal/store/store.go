@@ -20,6 +20,7 @@ type Value struct {
 type Store struct {
 	data map[string]Value
 	mu sync.RWMutex
+	Aof *AOFManager
 }
 
 func New() *Store {

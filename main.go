@@ -11,9 +11,24 @@ import (
 )
 
 func main() {
-	store := store.New()
+	st := store.New()
+	aof, err := store.NewAOFManager("echodb.aof")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(){
+		if err := aof.Close(); err != nil {
+			log.Println("Failed to close AOF:", err)
+		}
+	}()
+	
+	log.Println("Restoring AOF data...")
+	if err := aof.LoadFromAOF(st); err != nil {
+		log.Println("Failed to restore AOF:", err)
+	}
 
-	s := server.New(":6380", store)
+	st.Aof = aof
+	s := server.New(":6380", st)
 
 	go func(){
 		if err := s.Start(); err != nil {

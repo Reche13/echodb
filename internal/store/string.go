@@ -4,6 +4,10 @@ func (s *Store) Set(key, value string) {
     s.mu.Lock()
     defer s.mu.Unlock()
     s.data[key] = Value{Type: StringType, Data: value}
+
+    if s.Aof != nil {
+        s.Aof.AppendRESP("SET", key, value)
+    }
 }
 
 func (s *Store) Get(key string) (string, bool) {
@@ -20,6 +24,9 @@ func (s *Store) Del(keys ...string) int {
     for _, key := range keys {
         if _, ok := s.GetValueOrExpire(key); ok {
             s.DeleteKey(key)
+            if s.Aof != nil {
+                s.Aof.AppendRESP("DEL", key)
+            }
             deleted++
         }
     }
