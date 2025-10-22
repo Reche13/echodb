@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/reche13/echodb/internal/commands"
 	"github.com/reche13/echodb/internal/server"
 	"github.com/reche13/echodb/internal/store"
 )
@@ -28,7 +29,8 @@ func main() {
 	}
 
 	st.Aof = aof
-	s := server.New(":6380", st)
+	ex := commands.NewExecutor(st)
+	s := server.New(":6380", ex)
 
 	go func(){
 		if err := s.Start(); err != nil {

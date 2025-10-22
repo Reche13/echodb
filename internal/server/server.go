@@ -9,12 +9,11 @@ import (
 
 	"github.com/reche13/echodb/internal/commands"
 	"github.com/reche13/echodb/internal/protocol"
-	"github.com/reche13/echodb/internal/store"
 )
 
 type Server struct {
 	Addr string
-	store *store.Store
+	executor *commands.Executor
 	clients map[net.Conn]*Client
 	mu sync.RWMutex
 	listener net.Listener
@@ -27,10 +26,10 @@ type Client struct {
 	serializer *protocol.Serializer
 }
 
-func New(addr string, store *store.Store) *Server {
+func New(addr string, executor *commands.Executor) *Server {
 	return &Server{
 		Addr: addr,
-		store: store,
+		executor: executor,
 		clients: make(map[net.Conn]*Client),
 	}
 }
@@ -127,7 +126,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 			return
 		}
 
-		val := commands.Execute(s.store ,args)
+		val := s.executor.Execute(args)
 
 		out, err := client.serializer.Serialize(val)
 		if err != nil {
