@@ -7,13 +7,14 @@ import (
 	"syscall"
 
 	"github.com/reche13/echodb/internal/commands"
+	"github.com/reche13/echodb/internal/persistence"
 	"github.com/reche13/echodb/internal/server"
 	"github.com/reche13/echodb/internal/store"
 )
 
 func main() {
 	st := store.New()
-	aof, err := store.NewAOFManager("echodb.aof")
+	aof, err := persistence.NewAOFManager("echodb.aof")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,12 +25,11 @@ func main() {
 	}()
 	
 	log.Println("Restoring AOF data...")
-	if err := aof.LoadFromAOF(st); err != nil {
+	if err := aof.Load(st); err != nil {
 		log.Println("Failed to restore AOF:", err)
 	}
 
-	st.Aof = aof
-	ex := commands.NewExecutor(st)
+	ex := commands.NewExecutor(st, aof)
 	s := server.New(":6380", ex)
 
 	go func(){

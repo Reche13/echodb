@@ -1,4 +1,4 @@
-package store
+package persistence
 
 import (
 	"bufio"
@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/reche13/echodb/internal/protocol"
+	"github.com/reche13/echodb/internal/store"
 )
 
 type AOFManager struct {
@@ -24,25 +25,23 @@ func NewAOFManager(path string) (*AOFManager, error) {
 	}
 
 	return &AOFManager{
-		file: file,
+		file:   file,
 		writer: bufio.NewWriter(file),
 	}, nil
 }
 
-func (a *AOFManager) AppendRESP(cmd string, args ...string) error {
+
+func (a *AOFManager) Log(cmd *protocol.RESPValue) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	n := 1 + len(args)
-	data := fmt.Sprintf("*%d\r\n", n)
-
-	data += fmt.Sprintf("$%d\r\n%s\r\n", len(cmd), cmd)
-
-	for _, arg := range args {
-		data += fmt.Sprintf("$%d\r\n%s\r\n", len(arg), arg)
+	sr := protocol.NewSerializer()
+	data, err := sr.Serialize(cmd)
+	if err != nil {
+		return err
 	}
 
-	if _, err := a.writer.WriteString(data); err != nil {
+	if _, err := a.writer.Write(data); err != nil {
 		return err
 	}
 
@@ -67,7 +66,7 @@ func (a *AOFManager) Close() error {
 }
 
 
-func (a *AOFManager) LoadFromAOF(s *Store) error {
+func (a *AOFManager) Load(s *store.Store) error {
 	file, err := os.Open(a.file.Name())
 	if err != nil {
 		return err
