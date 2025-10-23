@@ -2,6 +2,7 @@ package commands
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/reche13/echodb/internal/protocol"
 	"github.com/reche13/echodb/internal/store"
@@ -31,7 +32,9 @@ func Expire(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue 
 		return protocol.NewError("ERR value is invalid or out of range")
 	}
 
-	if store.Expire(key, seconds) {
+	expiresAt := time.Now().Unix() + seconds
+
+	if store.Expire(key, expiresAt) {
 		return protocol.NewInteger(1)
 	}
 	

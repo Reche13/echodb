@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"strings"
+
 	"github.com/reche13/echodb/internal/persistence"
 	"github.com/reche13/echodb/internal/protocol"
 	"github.com/reche13/echodb/internal/store"
@@ -18,9 +20,34 @@ func NewExecutor(store *store.Store, executor persistence.Persistence) *Executor
 func (e *Executor) Execute(command *protocol.RESPValue) *protocol.RESPValue {
 	result := Execute(e.store, command)
 
-	if e.persister != nil {
+	if e.persister != nil && e.shouldLogCommand(command) {
 		e.persister.Log(command)
 	}
-	
+
 	return result
+}
+
+func (e *Executor) shouldLogCommand(command *protocol.RESPValue) bool {
+	args, ok := command.GetArray()
+	if !ok || len(args) == 0 {
+		return false
+	}
+
+	cmdName, ok := args[0].GetString()
+	if !ok {
+		return false
+	}
+
+	writeCommands := map[string]bool{
+		"SET": true,
+		"DEL": true,
+		"LPUSH": true,
+		"RPUSH": true,
+		"LPOP": true,
+		"RPOP": true,
+		"EXPIRE": true,
+		"PERSIST": true,
+	}
+
+	return writeCommands[strings.ToUpper(cmdName)]
 }

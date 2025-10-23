@@ -9,7 +9,7 @@ func (s *Store) IsExpired(val Value) bool {
 	return time.Now().Unix() > val.ExpiresAt
 }
 
-func (s *Store) Expire(key string, seconds int64) bool {
+func (s *Store) Expire(key string, expiresAt int64) bool {
 	val, ok := s.GetValueOrExpire(key)
 	if !ok {
 		return false
@@ -17,7 +17,7 @@ func (s *Store) Expire(key string, seconds int64) bool {
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	val.ExpiresAt = time.Now().Unix() + seconds
+	val.ExpiresAt = expiresAt
 	s.data[key] = val
 
 	return true

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/reche13/echodb/internal/protocol"
 	"github.com/reche13/echodb/internal/store"
@@ -129,6 +130,32 @@ func (a *AOFManager) Load(s *store.Store) error {
 			for _, val := range args[1:] {
 				s.RPush(args[0], val)
 			}
+		case "LPOP":
+			if len(args) < 1 {
+				continue
+			}
+			if len(args) == 2 {
+				count, err := strconv.Atoi(args[1])
+				if err != nil {
+					continue
+				}
+				s.LPop(args[0], count)
+			} else {
+				s.LPop(args[0], 1)
+			}
+		case "RPOP":
+			if len(args) < 1 {
+				continue
+			}
+			if len(args) == 2 {
+				count, err := strconv.Atoi(args[1])
+				if err != nil {
+					continue
+				}
+				s.LPop(args[0], count)
+			} else {
+				s.LPop(args[0], 1)
+			}
 		case "EXPIRE":
 			if len(args) != 2 {
 				continue
@@ -137,7 +164,7 @@ func (a *AOFManager) Load(s *store.Store) error {
 			if err != nil {
 				continue
 			}
-			s.Expire(args[0], int64(ttl))
+			s.Expire(args[0], time.Now().Unix() + int64(ttl))
 		case "PERSIST":
 			if len(args) != 1 {
 				continue
