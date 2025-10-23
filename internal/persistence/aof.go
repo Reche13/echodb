@@ -4,22 +4,35 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/reche13/echodb/internal/config"
 	"github.com/reche13/echodb/internal/protocol"
 	"github.com/reche13/echodb/internal/store"
 )
 
 type AOFManager struct {
 	file *os.File
+	config *config.PersistenceConfig
 	writer *bufio.Writer
+	syncMode SyncMode
 	mu sync.Mutex
 }
 
-func NewAOFManager(path string) (*AOFManager, error) {
+type SyncMode string
+
+const  (
+	ALWAYS SyncMode = "always"
+	EVERYSEC SyncMode = "everysec"
+	NO SyncMode = "no" 
+)
+
+func NewAOFManager(cfg *config.PersistenceConfig) (*AOFManager, error) {
+	path := filepath.Join(cfg.DataDir, cfg.Aof.File)
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		return nil, err
@@ -28,6 +41,8 @@ func NewAOFManager(path string) (*AOFManager, error) {
 	return &AOFManager{
 		file:   file,
 		writer: bufio.NewWriter(file),
+		config: cfg,
+		syncMode: SyncMode(cfg.Aof.SyncMode),
 	}, nil
 }
 
@@ -46,7 +61,36 @@ func (a *AOFManager) Log(cmd *protocol.RESPValue) error {
 		return err
 	}
 
-	return a.writer.Flush()
+	switch a.syncMode {
+	case ALWAYS:
+		return a.writer.Flush()
+	case EVERYSEC:
+		return nil
+	case NO:
+		return nil
+	default:
+		return a.writer.Flush()
+	}
+}
+
+func (a *AOFManager) StartBackgroundFlush() {
+	if a.syncMode != EVERYSEC {
+		return
+	}
+
+	go func(){
+		ticker := time.NewTicker(10 * time.Second)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				a.mu.Lock()
+				a.writer.Flush()
+				a.mu.Unlock()
+			}
+		}
+	}()
 }
 
 func (a *AOFManager) Close() error {

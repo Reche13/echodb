@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -9,6 +10,7 @@ import (
 type Config struct {
 	Server ServerConfig `mapstructure:"server"`
 	Storage StorageConfig `mapstructure:"storage"`
+	Persistence PersistenceConfig `mapstructure:"persistence"`
 }
 
 type ServerConfig struct {
@@ -16,6 +18,19 @@ type ServerConfig struct {
 	Port int `mapstructure:"port"`
 }
 type StorageConfig struct {}
+
+type PersistenceConfig struct {
+	Enabled bool `mapstructure:"enabled"`
+	DataDir string `mapstructure:"data_dir"`
+	Aof AofConfig `mapstructure:"aof"`
+}
+
+type AofConfig struct {
+	Enabled bool `mapstructure:"enabled"`
+	File string `mapstructure:"file"`
+	SyncMode string `mapstructure:"sync_mode"`
+	FlushInterval time.Duration `mapstructure:"flush_interval"`
+}
 
 func Load() (*Config, error) {
 	viper.SetConfigName("config")

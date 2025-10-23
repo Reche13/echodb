@@ -1,3 +1,16 @@
+# EchoDB configs
+
+# server related configs
 server:
   host: "0.0.0.0"
   port: 6380
+
+# persistence related configs
+persistence:
+  enabled: true
+  data_dir: "./data"
+  aof:
+    enabled: true
+    file: "appendonly.aof"
+    sync_mode: "periodic"
+    flush_interval: "1s"

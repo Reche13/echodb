@@ -22,7 +22,8 @@ func main() {
 	}
 	
 	st := store.New()
-	aof, err := persistence.NewAOFManager("echodb.aof")
+
+	aof, err := persistence.NewAOFManager(&cfg.Persistence)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,6 +32,7 @@ func main() {
 			log.Println("Failed to close AOF:", err)
 		}
 	}()
+	aof.StartBackgroundFlush()
 	
 	log.Println("Restoring AOF data...")
 	if err := aof.Load(st); err != nil {
