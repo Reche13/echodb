@@ -8,11 +8,12 @@ import (
 	"sync"
 
 	"github.com/reche13/echodb/internal/commands"
+	"github.com/reche13/echodb/internal/config"
 	"github.com/reche13/echodb/internal/protocol"
 )
 
 type Server struct {
-	Addr string
+	config *config.ServerConfig
 	executor *commands.Executor
 	clients map[net.Conn]*Client
 	mu sync.RWMutex
@@ -26,9 +27,9 @@ type Client struct {
 	serializer *protocol.Serializer
 }
 
-func New(addr string, executor *commands.Executor) *Server {
+func New(cfg *config.ServerConfig, executor *commands.Executor) *Server {
 	return &Server{
-		Addr: addr,
+		config: cfg,
 		executor: executor,
 		clients: make(map[net.Conn]*Client),
 	}
@@ -43,12 +44,14 @@ func NewClient(conn net.Conn) *Client {
 }
 
 func (s *Server) Start() error {
-	l, err := net.Listen("tcp", s.Addr)
+	addr := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
+
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		return fmt.Errorf("cannot listen on %s: %w", s.Addr, err)
+		return fmt.Errorf("cannot listen on %s: %w", addr, err)
 	}
 	defer l.Close()
-	log.Println("Listening on ", s.Addr)
+	log.Println("Listening on ", addr)
 
 	return s.AcceptConnections(l)
 }

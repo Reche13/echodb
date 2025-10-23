@@ -11,7 +11,10 @@ type Config struct {
 	Storage StorageConfig `mapstructure:"storage"`
 }
 
-type ServerConfig struct {}
+type ServerConfig struct {
+	Host string `mapstructure:"host"`
+	Port int `mapstructure:"port"`
+}
 type StorageConfig struct {}
 
 func Load() (*Config, error) {

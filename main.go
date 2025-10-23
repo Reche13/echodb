@@ -1,18 +1,26 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/reche13/echodb/internal/commands"
+	"github.com/reche13/echodb/internal/config"
 	"github.com/reche13/echodb/internal/persistence"
 	"github.com/reche13/echodb/internal/server"
 	"github.com/reche13/echodb/internal/store"
 )
 
 func main() {
+	cfg, err := config.Load()
+	if err != nil {
+		fmt.Printf("Failed to load configurations: %v\n", err)
+		os.Exit(1)
+	}
+	
 	st := store.New()
 	aof, err := persistence.NewAOFManager("echodb.aof")
 	if err != nil {
@@ -30,7 +38,7 @@ func main() {
 	}
 
 	ex := commands.NewExecutor(st, aof)
-	s := server.New(":6380", ex)
+	s := server.New(&cfg.Server, ex)
 
 	go func(){
 		if err := s.Start(); err != nil {
