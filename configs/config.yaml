@@ -13,4 +13,4 @@ persistence:
     enabled: true
     file: "appendonly.aof"
     sync_mode: "periodic"
-    flush_interval: "1s"
+    flush_interval: "5s"

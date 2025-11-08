@@ -20,6 +20,7 @@ type AOFManager struct {
 	config *config.PersistenceConfig
 	writer *bufio.Writer
 	syncMode SyncMode
+	flushInterval time.Duration
 	mu sync.Mutex
 }
 
@@ -27,7 +28,7 @@ type SyncMode string
 
 const  (
 	ALWAYS SyncMode = "always"
-	EVERYSEC SyncMode = "everysec"
+	PERIODIC SyncMode = "periodic"
 	NO SyncMode = "no" 
 )
 
@@ -43,6 +44,7 @@ func NewAOFManager(cfg *config.PersistenceConfig) (*AOFManager, error) {
 		writer: bufio.NewWriter(file),
 		config: cfg,
 		syncMode: SyncMode(cfg.Aof.SyncMode),
+		flushInterval: cfg.Aof.FlushInterval,
 	}, nil
 }
 
@@ -64,7 +66,7 @@ func (a *AOFManager) Log(cmd *protocol.RESPValue) error {
 	switch a.syncMode {
 	case ALWAYS:
 		return a.writer.Flush()
-	case EVERYSEC:
+	case PERIODIC:
 		return nil
 	case NO:
 		return nil
@@ -74,12 +76,12 @@ func (a *AOFManager) Log(cmd *protocol.RESPValue) error {
 }
 
 func (a *AOFManager) StartBackgroundFlush() {
-	if a.syncMode != EVERYSEC {
+	if a.syncMode != PERIODIC {
 		return
 	}
 
 	go func(){
-		ticker := time.NewTicker(10 * time.Second)
+		ticker := time.NewTicker(a.flushInterval)
 		defer ticker.Stop()
 
 		for {
