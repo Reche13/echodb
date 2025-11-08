@@ -32,7 +32,7 @@ func Expire(store *store.Store, args []*protocol.RESPValue) *protocol.RESPValue 
 		return protocol.NewError("ERR value is invalid or out of range")
 	}
 
-	expiresAt := time.Now().Unix() + seconds
+	expiresAt := time.Now().UnixMilli() + (seconds * 1000)
 
 	if store.Expire(key, expiresAt) {
 		return protocol.NewInteger(1)

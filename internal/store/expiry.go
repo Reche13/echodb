@@ -6,7 +6,7 @@ func (s *Store) IsExpired(val Value) bool {
 	if val.ExpiresAt == 0 {
 		return false
 	}
-	return time.Now().Unix() > val.ExpiresAt
+	return time.Now().UnixMilli() > val.ExpiresAt
 }
 
 func (s *Store) Expire(key string, expiresAt int64) bool {
@@ -47,5 +47,5 @@ func (s *Store) TTL(key string) int64 {
 		return -1
 	}
 
-	return val.ExpiresAt - time.Now().Unix()
+	return (val.ExpiresAt - time.Now().UnixMilli()) / 1000
 }

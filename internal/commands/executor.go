@@ -1,7 +1,9 @@
 package commands
 
 import (
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/reche13/echodb/internal/persistence"
 	"github.com/reche13/echodb/internal/protocol"
@@ -21,7 +23,30 @@ func (e *Executor) Execute(command *protocol.RESPValue) *protocol.RESPValue {
 	result := Execute(e.store, command)
 
 	if e.persister != nil && e.shouldLogCommand(command) {
-		e.persister.Log(command)
+		logCmd := command
+		cmdArr, ok := command.GetArray()
+		if ok && len(cmdArr) > 0 {
+			cmdName, ok := cmdArr[0].GetString()
+			if ok && strings.ToUpper(cmdName) == "EXPIRE" && len(cmdArr) == 3 {
+				ttlStr, ok := cmdArr[2].GetString()
+				if ok {
+					seconds, err := strconv.ParseInt(ttlStr, 10, 64)
+					if err == nil {
+						absoluteTime := time.Now().UnixMilli() + (seconds * 1000)
+
+						logCmd = protocol.NewArray([]*protocol.RESPValue{
+							cmdArr[0],
+							cmdArr[1],
+							protocol.NewInteger(absoluteTime),
+						})
+					}
+				}
+			}
+		}
+
+
+
+		e.persister.Log(logCmd)
 	}
 
 	return result

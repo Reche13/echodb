@@ -146,7 +146,11 @@ func (a *AOFManager) Load(s *store.Store) error {
 		for _, v := range respVal.Array[1:] {
 			arg, ok := v.GetString()
 			if !ok {
-				continue
+				i, ok := v.GetInteger()
+				if !ok {
+					continue
+				}
+				arg = fmt.Sprintf("%d", i)
 			}
 			args = append(args,arg)
 		}
@@ -206,11 +210,11 @@ func (a *AOFManager) Load(s *store.Store) error {
 			if len(args) != 2 {
 				continue
 			}
-			ttl, err := strconv.Atoi(args[1])
+			ttl, err := strconv.ParseInt(args[1], 10, 64)
 			if err != nil {
 				continue
 			}
-			s.Expire(args[0], time.Now().Unix() + int64(ttl))
+			s.Expire(args[0], ttl)
 		case "PERSIST":
 			if len(args) != 1 {
 				continue
