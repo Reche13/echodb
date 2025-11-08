@@ -11,6 +11,6 @@ persistence:
   data_dir: "./data"
   aof:
     enabled: true
-    file: "appendonly.aof"
+    file: "echo.aof"
     sync_mode: "periodic"
     flush_interval: "5s"

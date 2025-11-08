@@ -1,1 +1,4 @@
 *.aof
+/bin/
+*.exe
+*.out
