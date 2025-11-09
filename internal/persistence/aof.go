@@ -202,9 +202,9 @@ func (a *AOFManager) Load(s *store.Store) error {
 				if err != nil {
 					continue
 				}
-				s.LPop(args[0], count)
+				s.RPop(args[0], count)
 			} else {
-				s.LPop(args[0], 1)
+				s.RPop(args[0], 1)
 			}
 		case "EXPIRE":
 			if len(args) != 2 {
