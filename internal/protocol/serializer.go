@@ -44,12 +44,6 @@ func (s *Serializer) serializeValue(rv *RESPValue) error {
 }
 
 func (s *Serializer) writeSimpleString(v string) error {
-	if v == "" {
-		_, err := s.buffer.WriteString("$-1\r\n")
-		if err != nil {
-			return err
-		}
-	}
 	_, err := fmt.Fprintf(s.buffer, "+%s\r\n", v)
 	return err
 }
