@@ -2,7 +2,7 @@ APP_NAME := echodb
 BIN := ./bin
 MAIN_FILE := ./cmd/main.go
 
-.PHONY: build run start
+.PHONY: build run start test
 
 
 build:
@@ -14,3 +14,6 @@ run:
 
 start: build
 	@$(BIN)/$(APP_NAME)
+
+test:
+	go test -v -cover ./...
