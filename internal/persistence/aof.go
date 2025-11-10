@@ -22,6 +22,7 @@ type AOFManager struct {
 	syncMode SyncMode
 	flushInterval time.Duration
 	mu sync.Mutex
+	stopChan chan struct{}
 }
 
 type SyncMode string
@@ -45,6 +46,7 @@ func NewAOFManager(cfg *config.PersistenceConfig) (*AOFManager, error) {
 		config: cfg,
 		syncMode: SyncMode(cfg.Aof.SyncMode),
 		flushInterval: cfg.Aof.FlushInterval,
+		stopChan: make(chan struct{}),
 	}, nil
 }
 
@@ -88,14 +90,26 @@ func (a *AOFManager) StartBackgroundFlush() {
 			select {
 			case <-ticker.C:
 				a.mu.Lock()
-				a.writer.Flush()
+				if err := a.writer.Flush(); err == nil {
+					a.file.Sync()
+				}
 				a.mu.Unlock()
+			case <-a.stopChan:
+				return
 			}
 		}
 	}()
 }
 
-func (a *AOFManager) Close() error {
+func (a *AOFManager) Close() error {	
+	if a.stopChan != nil {
+		select {
+		case <-a.stopChan:
+		default:
+			close(a.stopChan)
+		}
+	}
+
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -106,7 +120,12 @@ func (a *AOFManager) Close() error {
 	}
 
 	if a.file != nil {
-		return a.file.Close()
+		if err := a.file.Sync(); err != nil {
+			return err
+		}
+		if err := a.file.Close(); err != nil {
+			return err
+		}
 	}
 
 	return nil
