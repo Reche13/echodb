@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ import (
 	"github.com/reche13/echodb/internal/store"
 )
 
-func main() {
+func Execute() {
 	cfg, err := config.Load()
 	if err != nil {
 		fmt.Printf("Failed to load configurations: %v\n", err)

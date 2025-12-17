@@ -1,19 +1,24 @@
 APP_NAME := echodb
+GOOS     ?= $(shell go env GOOS)
+GOARCH   ?= $(shell go env GOARCH)
+
 BIN := ./bin
-MAIN_FILE := ./cmd/main.go
+MAIN_FILE := main.go
 
 .PHONY: build run start test
 
 
 build:
-	@mkdir -p $(BIN)
-	go build -o $(BIN)/$(APP_NAME) $(MAIN_FILE)
+	@echo "Building $(APP_NAME) for $(GOOS)/$(GOARCH)"
+	GOOS=$(GOOS) GOARCH=$(GOARCH) \
+	go build \
+	-o $(APP_NAME)
 
 run:
 	go run $(MAIN_FILE)
 
 start: build
-	@$(BIN)/$(APP_NAME)
+	@./$(APP_NAME)
 
 test:
 	go test -v -cover ./...
