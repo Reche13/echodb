@@ -44,6 +44,7 @@ func NewClient(conn net.Conn) *Client {
 }
 
 func (s *Server) Start() error {
+	PrintBanner("0.1.0")
 	addr := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
 
 	l, err := net.Listen("tcp", addr)
