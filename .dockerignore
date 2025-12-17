@@ -1,0 +1,12 @@
+.git
+.gitignore
+
+docs/
+data/
+
+# Ignore build outputs, binaries, IDE files
+bin/
+node_modules/
+*.log
+*.md
+echodb

@@ -23,20 +23,25 @@ func Execute() {
 	
 	st := store.New()
 
-	aof, err := persistence.NewAOFManager(&cfg.Persistence)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer func(){
-		if err := aof.Close(); err != nil {
-			log.Println("Failed to close AOF:", err)
+	var aof *persistence.AOFManager
+	if cfg.Persistence.Enabled {
+				log.Println("YESS")
+		aof, err = persistence.NewAOFManager(&cfg.Persistence)
+		if err != nil {
+			log.Fatal(err)
 		}
-	}()
-	aof.StartBackgroundFlush()
-	
-	log.Println("Restoring AOF data...")
-	if err := aof.Load(st); err != nil {
-		log.Println("Failed to restore AOF:", err)
+		defer func() {
+			if err := aof.Close(); err != nil {
+				log.Println("Failed to close AOF:", err)
+			}
+		}()
+
+		aof.StartBackgroundFlush()
+		if err := aof.Load(st); err != nil {
+			log.Println("Failed to restore AOF:", err)
+		}
+	} else {
+		log.Println("Persistence is disabled. Skipping AOF initialization.")
 	}
 
 	ex := commands.NewExecutor(st, aof)
