@@ -1,9 +1,13 @@
 APP_NAME := echodb
+BUILD_DIR ?= .
+VERSION := $(shell cat VERSION)
 GOOS     ?= $(shell go env GOOS)
 GOARCH   ?= $(shell go env GOARCH)
 
+LDFLAGS := -X 'github.com/reche13/echodb/internal/info.Version=$(VERSION)'
+
 DOCKER_IMAGE := $(APP_NAME)
-DOCKER_TAG   := latest
+DOCKER_TAG   := $(VERSION)
 DOCKER_PORT  := 6380
 
 .PHONY: build run start test docker-build docker-run
@@ -11,9 +15,21 @@ DOCKER_PORT  := 6380
 
 build:
 	@echo "Building $(APP_NAME) for $(GOOS)/$(GOARCH)"
+	@echo "version $(VERSION)"
 	GOOS=$(GOOS) GOARCH=$(GOARCH) \
 	go build \
-	-o $(APP_NAME)
+	-ldflags "$(LDFLAGS)" \
+	-o $(BUILD_DIR)/$(APP_NAME)
+
+build-prod:
+	@echo "Building PROD $(APP_NAME) for $(GOOS)/$(GOARCH)"
+	@echo "version $(VERSION)"
+	GOOS=$(GOOS) GOARCH=$(GOARCH) \
+	CGO_ENABLED=0 \
+	go build \
+	-trimpath \
+	-ldflags "$(LDFLAGS) -s -w" \
+	-o $(BUILD_DIR)/$(APP_NAME)
 
 run:
 	go run main.go

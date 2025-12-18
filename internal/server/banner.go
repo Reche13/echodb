@@ -2,6 +2,8 @@ package server
 
 import (
 	"fmt"
+
+	"github.com/reche13/echodb/internal/info"
 )
 
 const (
@@ -11,7 +13,7 @@ const (
 	colorGreen  = "\033[32m"
 )
 
-func PrintBanner(version string) {
+func PrintBanner() {
 	fmt.Println(colorCyan + `
 ███████╗ ██████╗██╗  ██╗ ██████╗ 
 ██╔════╝██╔════╝██║  ██║██╔═══██╗
@@ -22,7 +24,7 @@ func PrintBanner(version string) {
 ` + colorReset)
 
 	fmt.Println(colorPurple + "EchoDB — In-Memory Data Store" + colorReset)
-	fmt.Printf(colorGreen+"Version: %s\n"+colorReset, version)
+	fmt.Printf(colorGreen+"Version: %s\n"+colorReset, info.Version)
 	fmt.Println(colorGreen + "Status : Starting up..." + colorReset)
 	fmt.Println()
 }
