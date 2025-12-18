@@ -1,0 +1,134 @@
+---
+title: TTL
+description: Get the remaining time to live of a key
+---
+
+# TTL
+
+Returns the remaining time to live (TTL) of a key in seconds.
+
+## Syntax
+
+```bash
+TTL key
+```
+
+## Description
+
+The `TTL` command returns the remaining time to live of a key in seconds. It returns different values depending on the key's state.
+
+## Arguments
+
+- `key` (required): The name of the key to check.
+
+## Return Value
+
+Returns an Integer:
+- **Positive integer**: The remaining TTL in seconds
+- **`-1`**: The key exists but has no expiration set
+- **`-2`**: The key does not exist
+
+## Examples
+
+### Key with Expiration
+
+```bash
+SET mykey "value"
+EXPIRE mykey 3600
+TTL mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) 3600
+```
+
+### Key Without Expiration
+
+```bash
+SET mykey "value"
+TTL mykey
+```
+
+**Response:**
+```
+OK
+(integer) -1
+```
+
+### Non-Existent Key
+
+```bash
+TTL nonexistent
+```
+
+**Response:**
+```
+(integer) -2
+```
+
+### TTL Decreases Over Time
+
+```bash
+SET mykey "value"
+EXPIRE mykey 10
+TTL mykey
+# Wait a few seconds
+TTL mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) 10
+(integer) 7  # After 3 seconds
+```
+
+### Expired Key
+
+```bash
+SET mykey "value"
+EXPIRE mykey 1
+# Wait 1 second
+TTL mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) -2  # Key has expired and been deleted
+```
+
+## Return Value Meanings
+
+| Value | Meaning |
+|-------|---------|
+| Positive integer | Remaining TTL in seconds |
+| `-1` | Key exists but has no expiration |
+| `-2` | Key does not exist (or has expired) |
+
+## Notes
+
+- TTL is returned in seconds
+- The value decreases over time as the expiration approaches
+- Returns `-1` if the key exists but has no expiration
+- Returns `-2` if the key doesn't exist or has expired
+- Works with both string and list keys
+
+## Use Cases
+
+- **Monitoring**: Check how much time is left before a key expires
+- **Debugging**: Verify that expiration is set correctly
+- **Conditional Logic**: Check if a key will expire soon
+- **Cache Management**: Monitor cache expiration times
+
+## Related Commands
+
+- [EXPIRE](/docs/commands/expire) - Set a timeout on a key
+- [PERSIST](/docs/commands/persist) - Remove the expiration from a key
+- [EXISTS](/docs/commands/exists) - Check if a key exists
+

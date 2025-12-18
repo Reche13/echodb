@@ -1,0 +1,23 @@
+{
+  "title": "commands",
+  "pages": [
+    "ping",
+    "echo",
+
+    "exists",
+    "del",
+    "expire",
+    "persist",
+    "ttl",
+
+    "set",
+    "get",
+
+    "lpush",
+    "rpush",
+    "lpop",
+    "rpop",
+    "llen",
+    "lrange"
+  ]
+}

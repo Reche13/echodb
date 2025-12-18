@@ -1,0 +1,107 @@
+---
+title: LPOP
+description: Remove and return elements from the left of a list
+---
+
+# LPOP
+
+Removes and returns one or more elements from the left (head) of a list.
+
+## Syntax
+
+```bash
+LPOP key [count]
+```
+
+## Description
+
+The `LPOP` command removes and returns elements from the left (head) of a list. If a count is specified, multiple elements are removed and returned. If the key does not exist, an empty array is returned.
+
+## Arguments
+
+- `key` (required): The name of the list key.
+- `count` (optional): The number of elements to pop. If not specified, defaults to 1. Must be a positive integer.
+
+## Return Value
+
+Returns an Array:
+- An array of popped elements (in the order they were in the list)
+- An empty array if the key doesn't exist or the list is empty
+
+## Examples
+
+### Popping a Single Element
+
+```bash
+LPUSH mylist "a" "b" "c"
+LPOP mylist
+```
+
+**Response:**
+```
+(integer) 3
+"c"
+```
+
+### Popping Multiple Elements
+
+```bash
+LPUSH mylist "d" "c" "b" "a"
+LPOP mylist 2
+```
+
+**Response:**
+```
+(integer) 4
+1) "a"
+2) "b"
+```
+
+### Popping from Empty List
+
+```bash
+LPOP emptylist
+```
+
+**Response:**
+```
+(nil)
+```
+
+### Popping More Than Available
+
+```bash
+LPUSH mylist "a" "b"
+LPOP mylist 5
+```
+
+**Response:**
+```
+(integer) 2
+1) "a"
+2) "b"
+```
+
+**Note:** If you request more elements than are available, all available elements are returned.
+
+## Notes
+
+- Elements are removed from the left (head) of the list
+- Returns elements in the order they were in the list
+- If count is greater than the list length, all elements are returned
+- Returns an empty array if the key doesn't exist
+- Returns a `WRONGTYPE` error if the key exists but is not a list
+
+## Use Cases
+
+- **Stacks**: Implement LIFO (Last In, First Out) operations
+- **Task Processing**: Remove tasks from the front of a queue
+- **Message Processing**: Process messages from the head of a queue
+- **Recent Items**: Remove oldest items from a recent items list
+
+## Related Commands
+
+- [RPOP](/docs/commands/rpop) - Remove and return elements from the right
+- [LPUSH](/docs/commands/lpush) - Prepend values to a list
+- [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
+

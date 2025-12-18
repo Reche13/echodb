@@ -1,0 +1,103 @@
+---
+title: DEL
+description: Delete one or more keys
+---
+
+# DEL
+
+Deletes one or more keys.
+
+## Syntax
+
+```bash
+DEL key [key ...]
+```
+
+## Description
+
+The `DEL` command removes one or more keys from ECHO DB. If a key does not exist, it is ignored. The command returns the number of keys that were actually removed.
+
+## Arguments
+
+- `key` (required, one or more): The name(s) of the key(s) to delete.
+
+## Return Value
+
+Returns an Integer: The number of keys that were removed.
+
+## Examples
+
+### Deleting a Single Key
+
+```bash
+SET mykey "value"
+DEL mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+```
+
+### Deleting Multiple Keys
+
+```bash
+SET key1 "value1"
+SET key2 "value2"
+SET key3 "value3"
+DEL key1 key2 key3
+```
+
+**Response:**
+```
+OK
+OK
+OK
+(integer) 3
+```
+
+### Deleting Non-Existent Keys
+
+```bash
+DEL nonexistent1 nonexistent2
+```
+
+**Response:**
+```
+(integer) 0
+```
+
+### Mixed Existing and Non-Existent Keys
+
+```bash
+SET key1 "value1"
+DEL key1 nonexistent key2
+```
+
+**Response:**
+```
+OK
+(integer) 1
+```
+
+## Notes
+
+- `DEL` works with both string and list keys
+- Non-existent keys are ignored (not counted as deleted)
+- The command is atomic - all specified keys are deleted in a single operation
+- Returns `0` if no keys were deleted
+
+## Use Cases
+
+- **Cleanup**: Remove temporary or expired data
+- **Cache Invalidation**: Delete cached entries
+- **Data Management**: Remove keys that are no longer needed
+- **Bulk Operations**: Delete multiple keys at once
+
+## Related Commands
+
+- [SET](/docs/commands/set) - Set a key's value
+- [GET](/docs/commands/get) - Get a key's value
+- [EXISTS](/docs/commands/exists) - Check if a key exists
+

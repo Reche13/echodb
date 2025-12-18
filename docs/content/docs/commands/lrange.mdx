@@ -1,0 +1,183 @@
+---
+title: LRANGE
+description: Get a range of elements from a list
+---
+
+# LRANGE
+
+Returns a range of elements from a list.
+
+## Syntax
+
+```bash
+LRANGE key start stop
+```
+
+## Description
+
+The `LRANGE` command returns the specified range of elements from a list. The range is specified by two indices: `start` and `stop`. Both indices are zero-based, and negative indices can be used to count from the end of the list.
+
+## Arguments
+
+- `key` (required): The name of the list key.
+- `start` (required): The starting index (0-based). Negative values count from the end (-1 is the last element).
+- `stop` (required): The ending index (inclusive). Negative values count from the end (-1 is the last element).
+
+## Return Value
+
+Returns an Array: A list of elements in the specified range, or an empty array if the key doesn't exist or the range is invalid.
+
+## Index Behavior
+
+- **Positive indices**: Count from the beginning (0 is the first element)
+- **Negative indices**: Count from the end (-1 is the last element)
+- **Range**: Both `start` and `stop` are inclusive
+- **Out of bounds**: Automatically adjusted to valid range
+
+## Examples
+
+### Getting All Elements
+
+```bash
+RPUSH mylist "a" "b" "c" "d" "e"
+LRANGE mylist 0 -1
+```
+
+**Response:**
+```
+(integer) 5
+1) "a"
+2) "b"
+3) "c"
+4) "d"
+5) "e"
+```
+
+### Getting First Three Elements
+
+```bash
+LRANGE mylist 0 2
+```
+
+**Response:**
+```
+1) "a"
+2) "b"
+3) "c"
+```
+
+### Getting Last Two Elements
+
+```bash
+LRANGE mylist -2 -1
+```
+
+**Response:**
+```
+1) "d"
+2) "e"
+```
+
+### Using Negative Indices
+
+```bash
+LRANGE mylist -3 -1
+```
+
+**Response:**
+```
+1) "c"
+2) "d"
+3) "e"
+```
+
+### Getting Middle Elements
+
+```bash
+LRANGE mylist 1 3
+```
+
+**Response:**
+```
+1) "b"
+2) "c"
+3) "d"
+```
+
+### Empty Range
+
+```bash
+LRANGE mylist 5 10
+```
+
+**Response:**
+```
+(empty array)
+```
+
+### Non-Existent Key
+
+```bash
+LRANGE nonexistent 0 -1
+```
+
+**Response:**
+```
+(empty array)
+```
+
+## Special Cases
+
+### `start` Greater Than `stop`
+
+If `start` is greater than `stop`, an empty array is returned:
+
+```bash
+LRANGE mylist 3 1
+```
+
+**Response:**
+```
+(empty array)
+```
+
+### Out of Bounds Indices
+
+Indices are automatically adjusted:
+- If `start` is negative and beyond the beginning, it's set to 0
+- If `stop` is beyond the end, it's set to the last index
+
+```bash
+LRANGE mylist -10 10
+```
+
+**Response:**
+```
+1) "a"
+2) "b"
+3) "c"
+4) "d"
+5) "e"
+```
+
+## Notes
+
+- Both `start` and `stop` are inclusive
+- Negative indices count from the end (-1 is the last element)
+- Returns an empty array if the key doesn't exist
+- Returns a `WRONGTYPE` error if the key exists but is not a list
+- The range is automatically adjusted to valid bounds
+
+## Use Cases
+
+- **Viewing Lists**: Display all or part of a list
+- **Pagination**: Get a page of items from a list
+- **Recent Items**: Get the last N items from a list
+- **Data Inspection**: Examine list contents for debugging
+
+## Related Commands
+
+- [LPUSH](/docs/commands/lpush) - Prepend values to a list
+- [RPUSH](/docs/commands/rpush) - Append values to a list
+- [LLEN](/docs/commands/llen) - Get the length of a list
+

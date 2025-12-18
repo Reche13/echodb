@@ -1,0 +1,105 @@
+---
+title: LLEN
+description: Get the length of a list
+---
+
+# LLEN
+
+Returns the length of a list.
+
+## Syntax
+
+```bash
+LLEN key
+```
+
+## Description
+
+The `LLEN` command returns the number of elements in a list. If the key does not exist, it returns 0. If the key exists but is not a list, an error is returned.
+
+## Arguments
+
+- `key` (required): The name of the list key.
+
+## Return Value
+
+Returns an Integer: The length of the list, or 0 if the key doesn't exist.
+
+## Examples
+
+### Getting Length of Existing List
+
+```bash
+RPUSH mylist "a" "b" "c"
+LLEN mylist
+```
+
+**Response:**
+```
+(integer) 3
+(integer) 3
+```
+
+### Getting Length of Non-Existent List
+
+```bash
+LLEN nonexistent
+```
+
+**Response:**
+```
+(integer) 0
+```
+
+### Getting Length After Operations
+
+```bash
+RPUSH mylist "a" "b" "c"
+LLEN mylist
+LPOP mylist
+LLEN mylist
+```
+
+**Response:**
+```
+(integer) 3
+(integer) 3
+"a"
+(integer) 2
+```
+
+### Empty List
+
+```bash
+LPUSH mylist "item"
+LPOP mylist
+LLEN mylist
+```
+
+**Response:**
+```
+(integer) 1
+"item"
+(integer) 0
+```
+
+## Notes
+
+- Returns `0` if the key doesn't exist
+- Returns `0` if the list is empty
+- Returns a `WRONGTYPE` error if the key exists but is not a list
+- The length is always a non-negative integer
+
+## Use Cases
+
+- **Queue Monitoring**: Check how many items are in a queue
+- **Validation**: Verify that a list has the expected number of elements
+- **Conditional Logic**: Check if a list is empty before processing
+- **Statistics**: Track the size of lists over time
+
+## Related Commands
+
+- [LPUSH](/docs/commands/lpush) - Prepend values to a list
+- [RPUSH](/docs/commands/rpush) - Append values to a list
+- [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
+

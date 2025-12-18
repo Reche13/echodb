@@ -1,0 +1,164 @@
+---
+title: Connecting to ECHO DB
+description: Connect to ECHO DB using redis-cli or any Redis client
+---
+
+# Connecting to ECHO DB
+
+ECHO DB can be connected to using any Redis client or `redis-cli`, since it implements the RESP protocol. Here are examples for popular languages.
+
+## Using redis-cli
+
+The simplest way to connect is using `redis-cli`:
+
+```bash
+redis-cli -p 6380
+```
+
+Once connected, you can start using commands:
+
+```bash
+127.0.0.1:6380> PING
+PONG
+127.0.0.1:6380> SET mykey "Hello ECHO DB"
+OK
+127.0.0.1:6380> GET mykey
+"Hello ECHO DB"
+```
+
+## TypeScript / Node.js
+
+### Using ioredis
+
+```bash
+npm install ioredis
+```
+
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis({
+  host: 'localhost',
+  port: 6380,
+});
+
+// Set and get
+await redis.set('mykey', 'myvalue');
+const value = await redis.get('mykey');
+console.log(value); // Output: myvalue
+
+// Lists
+await redis.lpush('mylist', 'item1', 'item2');
+const items = await redis.lrange('mylist', 0, -1);
+console.log(items); // Output: ['item2', 'item1']
+```
+
+### Using node_redis
+
+```bash
+npm install redis
+```
+
+```typescript
+import { createClient } from 'redis';
+
+const client = createClient({
+  socket: {
+    host: 'localhost',
+    port: 6380,
+  },
+});
+
+await client.connect();
+
+// Set and get
+await client.set('mykey', 'myvalue');
+const value = await client.get('mykey');
+console.log(value); // Output: myvalue
+
+await client.disconnect();
+```
+
+## Go
+
+### Using go-redis
+
+```bash
+go get github.com/redis/go-redis/v9
+```
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "github.com/redis/go-redis/v9"
+)
+
+func main() {
+    rdb := redis.NewClient(&redis.Options{
+        Addr: "localhost:6380",
+    })
+
+    ctx := context.Background()
+
+    // Set and get
+    err := rdb.Set(ctx, "mykey", "myvalue", 0).Err()
+    if err != nil {
+        panic(err)
+    }
+
+    val, err := rdb.Get(ctx, "mykey").Result()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("key", val) // Output: key myvalue
+
+    // Lists
+    rdb.LPush(ctx, "mylist", "item1", "item2")
+    items, _ := rdb.LRange(ctx, "mylist", 0, -1).Result()
+    fmt.Println("list", items) // Output: list [item2 item1]
+}
+```
+
+## Python
+
+### Using redis-py
+
+```bash
+pip install redis
+```
+
+```python
+import redis
+
+r = redis.Redis(host='localhost', port=6380, decode_responses=True)
+
+# Set and get
+r.set('mykey', 'myvalue')
+value = r.get('mykey')
+print(value)  # Output: myvalue
+
+# Lists
+r.lpush('mylist', 'item1', 'item2')
+items = r.lrange('mylist', 0, -1)
+print(items)  # Output: ['item2', 'item1']
+```
+
+## Connection Options
+
+Most Redis clients support additional connection options:
+
+- **Host**: Default is `localhost`
+- **Port**: Default is `6380`
+- **Timeout**: Connection and command timeouts
+- **Connection Pooling**: For better performance
+
+Refer to your client library's documentation for specific options.
+
+## Next Steps
+
+- [Commands](/docs/commands) - Learn available commands
+- [Configuration](/docs/configuration) - Configure your connection
+

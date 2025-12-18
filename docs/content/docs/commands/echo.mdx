@@ -1,0 +1,61 @@
+---
+title: ECHO
+description: Echo the given string
+---
+
+# ECHO
+
+Echoes the given string back to the client.
+
+## Syntax
+
+```bash
+ECHO message
+```
+
+## Description
+
+The `ECHO` command simply returns the message that was sent to it. This is useful for testing the connection and verifying that commands are being processed correctly.
+
+## Arguments
+
+- `message` (required): The string to echo back.
+
+## Return Value
+
+Returns a Simple String containing the message that was provided.
+
+## Examples
+
+### Basic ECHO
+
+```bash
+ECHO "Hello World"
+```
+
+**Response:**
+```
+Hello World
+```
+
+### ECHO with Special Characters
+
+```bash
+ECHO "Test: 123"
+```
+
+**Response:**
+```
+Test: 123
+```
+
+## Use Cases
+
+- **Connection Testing**: Verify that commands are being processed
+- **Debugging**: Test command parsing and response handling
+- **Protocol Testing**: Verify RESP protocol implementation
+
+## Related Commands
+
+- [PING](/docs/commands/ping) - Test connection
+

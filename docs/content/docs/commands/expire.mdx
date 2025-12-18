@@ -1,0 +1,108 @@
+---
+title: EXPIRE
+description: Set a timeout on a key
+---
+
+# EXPIRE
+
+Sets a timeout on a key. After the timeout expires, the key is automatically deleted.
+
+## Syntax
+
+```bash
+EXPIRE key seconds
+```
+
+## Description
+
+The `EXPIRE` command sets a timeout (in seconds) on a key. Once the timeout expires, the key is automatically deleted. The timeout is set from the current time, so if you set a timeout of 60 seconds, the key will expire 60 seconds from now.
+
+## Arguments
+
+- `key` (required): The name of the key to set expiration on.
+- `seconds` (required): The timeout in seconds. Must be a positive integer.
+
+## Return Value
+
+Returns an Integer:
+- `1` if the timeout was set successfully
+- `0` if the key doesn't exist
+
+## Examples
+
+### Setting Expiration
+
+```bash
+SET mykey "value"
+EXPIRE mykey 60
+```
+
+**Response:**
+```
+OK
+(integer) 1
+```
+
+### Checking TTL
+
+```bash
+SET mykey "value"
+EXPIRE mykey 3600
+TTL mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) 3600
+```
+
+### Expiring Non-Existent Key
+
+```bash
+EXPIRE nonexistent 60
+```
+
+**Response:**
+```
+(integer) 0
+```
+
+### Key Expires Automatically
+
+```bash
+SET mykey "value"
+EXPIRE mykey 1
+# Wait 1 second
+GET mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(nil)
+```
+
+## Notes
+
+- The timeout is set from the current time
+- Keys expire automatically - no manual cleanup needed
+- Works with both string and list keys
+- Returns `0` if the key doesn't exist
+- The timeout is specified in seconds
+
+## Use Cases
+
+- **Session Management**: Set expiration on session keys
+- **Cache Invalidation**: Automatically expire cached data
+- **Temporary Data**: Store data that should be automatically cleaned up
+- **Rate Limiting**: Use with counters that should reset after a period
+
+## Related Commands
+
+- [TTL](/docs/commands/ttl) - Get the remaining time to live of a key
+- [PERSIST](/docs/commands/persist) - Remove the expiration from a key
+- [SET](/docs/commands/set) - Set a key's value
+

@@ -1,0 +1,63 @@
+---
+title: PING
+description: Test the connection to ECHO DB
+---
+
+# PING
+
+Tests the connection to ECHO DB and returns a response.
+
+## Syntax
+
+```bash
+PING [message]
+```
+
+## Description
+
+The `PING` command is used to test if the connection to ECHO DB is working. If called without arguments, it returns `PONG`. If called with a message, it echoes back the message.
+
+## Arguments
+
+- `message` (optional): A message to echo back. If provided, ECHO DB will return this message instead of `PONG`.
+
+## Return Value
+
+Returns a Simple String:
+- `PONG` if no message is provided
+- The provided message if a message is given
+
+## Examples
+
+### Basic PING
+
+```bash
+PING
+```
+
+**Response:**
+```
+PONG
+```
+
+### PING with Message
+
+```bash
+PING "Hello ECHO DB"
+```
+
+**Response:**
+```
+Hello ECHO DB
+```
+
+## Use Cases
+
+- **Connection Testing**: Verify that the connection to ECHO DB is working
+- **Health Checks**: Use in monitoring scripts to check if ECHO DB is responsive
+- **Debugging**: Test network connectivity and server responsiveness
+
+## Related Commands
+
+- [ECHO](/docs/commands/echo) - Echo a string
+

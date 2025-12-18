@@ -6,7 +6,7 @@ GOARCH   ?= $(shell go env GOARCH)
 
 LDFLAGS := -X 'github.com/reche13/echodb/internal/info.Version=$(VERSION)'
 
-DOCKER_IMAGE := $(APP_NAME)
+DOCKER_IMAGE := rechesoares/$(APP_NAME)
 DOCKER_TAG   := $(VERSION)
 DOCKER_PORT  := 6380
 

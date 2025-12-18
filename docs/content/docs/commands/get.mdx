@@ -1,0 +1,89 @@
+---
+title: GET
+description: Get the value of a key
+---
+
+# GET
+
+Gets the value of a key.
+
+## Syntax
+
+```bash
+GET key
+```
+
+## Description
+
+The `GET` command retrieves the string value associated with a key. If the key does not exist, `GET` returns `nil` (null bulk string).
+
+## Arguments
+
+- `key` (required): The name of the key to retrieve.
+
+## Return Value
+
+Returns a Bulk String:
+- The value of the key if it exists
+- `nil` (null bulk string) if the key does not exist
+
+## Examples
+
+### Getting an Existing Key
+
+```bash
+SET mykey "Hello ECHO DB"
+GET mykey
+```
+
+**Response:**
+```
+OK
+"Hello ECHO DB"
+```
+
+### Getting a Non-Existent Key
+
+```bash
+GET nonexistent
+```
+
+**Response:**
+```
+(nil)
+```
+
+### Getting a Key After Deletion
+
+```bash
+SET mykey "value"
+DEL mykey
+GET mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(nil)
+```
+
+## Notes
+
+- `GET` only works with string values. If the key holds a list, you'll get a `WRONGTYPE` error
+- Keys are case-sensitive
+- Returns `nil` if the key doesn't exist or has expired
+
+## Use Cases
+
+- **Retrieving Cached Values**: Get previously stored cache entries
+- **Reading Configuration**: Retrieve configuration values
+- **Session Lookup**: Get session data by session ID
+- **Simple Data Retrieval**: Basic key-value lookups
+
+## Related Commands
+
+- [SET](/docs/commands/set) - Set a key's value
+- [EXISTS](/docs/commands/exists) - Check if a key exists
+- [DEL](/docs/commands/del) - Delete a key
+

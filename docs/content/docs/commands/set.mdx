@@ -1,0 +1,89 @@
+---
+title: SET
+description: Set a key to hold a string value
+---
+
+# SET
+
+Sets a key to hold a string value.
+
+## Syntax
+
+```bash
+SET key value
+```
+
+## Description
+
+The `SET` command stores a string value associated with a key. If the key already exists, the value is overwritten. The key can hold any string value, including binary data.
+
+## Arguments
+
+- `key` (required): The name of the key to set.
+- `value` (required): The string value to store.
+
+## Return Value
+
+Returns a Simple String: `OK` on success.
+
+## Examples
+
+### Basic SET
+
+```bash
+SET username "john_doe"
+```
+
+**Response:**
+```
+OK
+```
+
+### Setting a Value
+
+```bash
+SET mykey "Hello ECHO DB"
+GET mykey
+```
+
+**Response:**
+```
+OK
+"Hello ECHO DB"
+```
+
+### Overwriting an Existing Key
+
+```bash
+SET mykey "first value"
+SET mykey "second value"
+GET mykey
+```
+
+**Response:**
+```
+OK
+OK
+"second value"
+```
+
+## Notes
+
+- If the key already exists, the previous value is replaced
+- Keys can store any string value, including binary data
+- Keys are case-sensitive
+- There is no limit on the size of the value (subject to available memory)
+
+## Use Cases
+
+- **Caching**: Store cached values for fast retrieval
+- **Configuration**: Store configuration strings
+- **Session Data**: Store session information
+- **Simple Key-Value Storage**: Basic data storage
+
+## Related Commands
+
+- [GET](/docs/commands/get) - Get the value of a key
+- [DEL](/docs/commands/del) - Delete a key
+- [EXISTS](/docs/commands/exists) - Check if a key exists
+

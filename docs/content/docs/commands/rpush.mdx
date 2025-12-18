@@ -1,0 +1,102 @@
+---
+title: RPUSH
+description: Append one or more values to a list
+---
+
+# RPUSH
+
+Appends one or more values to a list.
+
+## Syntax
+
+```bash
+RPUSH key value [value ...]
+```
+
+## Description
+
+The `RPUSH` command appends one or more values to the tail (right side) of a list. If the key does not exist, it is created as an empty list before performing the operation. If the key exists but is not a list, an error is returned.
+
+## Arguments
+
+- `key` (required): The name of the list key.
+- `value` (required, one or more): The value(s) to append to the list.
+
+## Return Value
+
+Returns an Integer: The length of the list after the push operation.
+
+## Examples
+
+### Appending a Single Value
+
+```bash
+RPUSH mylist "item1"
+```
+
+**Response:**
+```
+(integer) 1
+```
+
+### Appending Multiple Values
+
+```bash
+RPUSH mylist "item1" "item2" "item3"
+```
+
+**Response:**
+```
+(integer) 3
+```
+
+### Viewing the List
+
+```bash
+RPUSH mylist "a" "b" "c"
+LRANGE mylist 0 -1
+```
+
+**Response:**
+```
+(integer) 3
+1) "a"
+2) "b"
+3) "c"
+```
+
+### Creating a New List
+
+```bash
+RPUSH newlist "first"
+LRANGE newlist 0 -1
+```
+
+**Response:**
+```
+(integer) 1
+1) "first"
+```
+
+## Notes
+
+- If the key doesn't exist, it is created as an empty list
+- Values are appended at the tail (right side) of the list
+- Multiple values are appended in the order they are specified
+- Returns a `WRONGTYPE` error if the key exists but is not a list
+- The operation is atomic
+
+## Use Cases
+
+- **Queues**: Implement FIFO (First In, First Out) data structures
+- **Task Lists**: Add tasks to the end of a task list
+- **Message Queues**: Add messages to the end of a queue
+- **Logs**: Append log entries to a log list
+
+## Related Commands
+
+- [LPUSH](/docs/commands/lpush) - Prepend values to a list
+- [RPOP](/docs/commands/rpop) - Remove and return values from the right
+- [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
+- [LLEN](/docs/commands/llen) - Get the length of a list
+

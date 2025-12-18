@@ -1,0 +1,109 @@
+---
+title: RPOP
+description: Remove and return elements from the right of a list
+---
+
+# RPOP
+
+Removes and returns one or more elements from the right (tail) of a list.
+
+## Syntax
+
+```bash
+RPOP key [count]
+```
+
+## Description
+
+The `RPOP` command removes and returns elements from the right (tail) of a list. If a count is specified, multiple elements are removed and returned. If the key does not exist, an empty array is returned.
+
+## Arguments
+
+- `key` (required): The name of the list key.
+- `count` (optional): The number of elements to pop. If not specified, defaults to 1. Must be a positive integer.
+
+## Return Value
+
+Returns an Array:
+- An array of popped elements (in reverse order - last element first)
+- An empty array if the key doesn't exist or the list is empty
+
+## Examples
+
+### Popping a Single Element
+
+```bash
+RPUSH mylist "a" "b" "c"
+RPOP mylist
+```
+
+**Response:**
+```
+(integer) 3
+"c"
+```
+
+### Popping Multiple Elements
+
+```bash
+RPUSH mylist "a" "b" "c" "d"
+RPOP mylist 2
+```
+
+**Response:**
+```
+(integer) 4
+1) "d"
+2) "c"
+```
+
+**Note:** Elements are returned in reverse order (last element first).
+
+### Popping from Empty List
+
+```bash
+RPOP emptylist
+```
+
+**Response:**
+```
+(nil)
+```
+
+### Popping More Than Available
+
+```bash
+RPUSH mylist "a" "b"
+RPOP mylist 5
+```
+
+**Response:**
+```
+(integer) 2
+1) "b"
+2) "a"
+```
+
+**Note:** If you request more elements than are available, all available elements are returned.
+
+## Notes
+
+- Elements are removed from the right (tail) of the list
+- Returns elements in reverse order (last element first)
+- If count is greater than the list length, all elements are returned
+- Returns an empty array if the key doesn't exist
+- Returns a `WRONGTYPE` error if the key exists but is not a list
+
+## Use Cases
+
+- **Queues**: Implement FIFO (First In, First Out) operations
+- **Task Processing**: Remove tasks from the end of a queue
+- **Message Processing**: Process messages from the tail of a queue
+- **Stack Operations**: Use as a stack (with RPUSH/RPOP)
+
+## Related Commands
+
+- [LPOP](/docs/commands/lpop) - Remove and return elements from the left
+- [RPUSH](/docs/commands/rpush) - Append values to a list
+- [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
+

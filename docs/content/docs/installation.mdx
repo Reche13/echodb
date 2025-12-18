@@ -1,0 +1,83 @@
+---
+title: Installation
+description: Install ECHO DB on your system
+---
+
+# Installation
+
+ECHO DB can be installed using multiple different ways. Choose the method that works best for your setup.
+
+## Prerequisites
+
+- Go 1.25.2 or higher
+- Make (optional, for Makefile commands)
+
+## From Source
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/reche13/echodb.git
+cd echodb
+```
+
+### Build
+
+You can build ECHO DB using Go directly or the provided Makefile.
+
+**Using Go:**
+
+```bash
+go build -o bin/echodb cmd/main.go
+```
+
+**Using Makefile:**
+
+```bash
+make build
+```
+
+This will create a binary in the `bin/` directory.
+
+### Run
+
+**Using Go:**
+
+```bash
+go run cmd/main.go
+```
+
+**Using Makefile:**
+
+```bash
+make run
+# or
+make start  # builds and runs
+```
+
+## Configuration
+
+Create a `config.yaml` file in the `configs/` directory or in the current working directory. See the [Configuration](/docs/configuration) section for details on all available options.
+
+## Verify Installation
+
+Once ECHO DB is running, you should see:
+
+```
+EchoDB — In-Memory Data Store
+Listening on 0.0.0.0:6380
+```
+
+Test the connection using `redis-cli`:
+
+```bash
+redis-cli -p 6380
+> PING
+PONG
+```
+
+## Next Steps
+
+- [Connecting to ECHO DB](/docs/connecting) - Learn how to connect
+- [Configuration](/docs/configuration) - Configure your instance
+

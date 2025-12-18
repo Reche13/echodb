@@ -1,0 +1,109 @@
+---
+title: PERSIST
+description: Remove the expiration from a key
+---
+
+# PERSIST
+
+Removes the expiration from a key, making it persist indefinitely.
+
+## Syntax
+
+```bash
+PERSIST key
+```
+
+## Description
+
+The `PERSIST` command removes the expiration from a key, making it persist indefinitely (until explicitly deleted). If the key doesn't exist or has no expiration set, the command returns 0.
+
+## Arguments
+
+- `key` (required): The name of the key to remove expiration from.
+
+## Return Value
+
+Returns an Integer:
+- `1` if the expiration was removed successfully
+- `0` if the key doesn't exist or has no expiration set
+
+## Examples
+
+### Removing Expiration
+
+```bash
+SET mykey "value"
+EXPIRE mykey 3600
+PERSIST mykey
+TTL mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) 1
+(integer) -1  # No expiration
+```
+
+### Key Without Expiration
+
+```bash
+SET mykey "value"
+PERSIST mykey
+```
+
+**Response:**
+```
+OK
+(integer) 0
+```
+
+### Non-Existent Key
+
+```bash
+PERSIST nonexistent
+```
+
+**Response:**
+```
+(integer) 0
+```
+
+### Making Expired Key Persistent
+
+```bash
+SET mykey "value"
+EXPIRE mykey 1
+# Wait 1 second - key has expired
+PERSIST mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) 0  # Key doesn't exist anymore
+```
+
+## Notes
+
+- Removes the expiration, making the key persist indefinitely
+- Returns `0` if the key doesn't exist
+- Returns `0` if the key has no expiration set
+- Works with both string and list keys
+- Once persisted, the key will not expire unless a new expiration is set
+
+## Use Cases
+
+- **Making Temporary Data Permanent**: Convert temporary keys to permanent ones
+- **Configuration Changes**: Remove expiration from configuration keys
+- **Data Preservation**: Ensure important data doesn't expire
+- **Dynamic Expiration Management**: Toggle expiration on and off as needed
+
+## Related Commands
+
+- [EXPIRE](/docs/commands/expire) - Set a timeout on a key
+- [TTL](/docs/commands/ttl) - Get the remaining time to live of a key
+- [SET](/docs/commands/set) - Set a key's value
+

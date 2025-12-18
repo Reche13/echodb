@@ -1,0 +1,104 @@
+---
+title: LPUSH
+description: Prepend one or more values to a list
+---
+
+# LPUSH
+
+Prepends one or more values to a list.
+
+## Syntax
+
+```bash
+LPUSH key value [value ...]
+```
+
+## Description
+
+The `LPUSH` command inserts one or more values at the head (left side) of a list. If the key does not exist, it is created as an empty list before performing the operation. If the key exists but is not a list, an error is returned.
+
+## Arguments
+
+- `key` (required): The name of the list key.
+- `value` (required, one or more): The value(s) to prepend to the list.
+
+## Return Value
+
+Returns an Integer: The length of the list after the push operation.
+
+## Examples
+
+### Pushing a Single Value
+
+```bash
+LPUSH mylist "item1"
+```
+
+**Response:**
+```
+(integer) 1
+```
+
+### Pushing Multiple Values
+
+```bash
+LPUSH mylist "item3" "item2" "item1"
+```
+
+**Response:**
+```
+(integer) 3
+```
+
+**Note:** The values are pushed in the order specified, so `item1` will be at the head of the list.
+
+### Viewing the List
+
+```bash
+LPUSH mylist "c" "b" "a"
+LRANGE mylist 0 -1
+```
+
+**Response:**
+```
+(integer) 3
+1) "a"
+2) "b"
+3) "c"
+```
+
+### Creating a New List
+
+```bash
+LPUSH newlist "first"
+LRANGE newlist 0 -1
+```
+
+**Response:**
+```
+(integer) 1
+1) "first"
+```
+
+## Notes
+
+- If the key doesn't exist, it is created as an empty list
+- Values are inserted at the head (left side) of the list
+- Multiple values are inserted in the order they are specified
+- Returns a `WRONGTYPE` error if the key exists but is not a list
+- The operation is atomic
+
+## Use Cases
+
+- **Stacks**: Implement LIFO (Last In, First Out) data structures
+- **Recent Items**: Add items to the front of a recent items list
+- **Message Queues**: Add messages to the front of a queue
+- **Task Lists**: Add tasks to the beginning of a task list
+
+## Related Commands
+
+- [RPUSH](/docs/commands/rpush) - Append values to a list
+- [LPOP](/docs/commands/lpop) - Remove and return values from the left
+- [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
+- [LLEN](/docs/commands/llen) - Get the length of a list
+

@@ -1,0 +1,104 @@
+---
+title: EXISTS
+description: Check if one or more keys exist
+---
+
+# EXISTS
+
+Checks if one or more keys exist.
+
+## Syntax
+
+```bash
+EXISTS key [key ...]
+```
+
+## Description
+
+The `EXISTS` command checks if the specified key(s) exist in ECHO DB. It returns the number of keys that exist. Keys that have expired are considered non-existent.
+
+## Arguments
+
+- `key` (required, one or more): The name(s) of the key(s) to check.
+
+## Return Value
+
+Returns an Integer: The number of keys that exist (between 0 and the number of keys specified).
+
+## Examples
+
+### Checking a Single Key
+
+```bash
+SET mykey "value"
+EXISTS mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+```
+
+### Checking a Non-Existent Key
+
+```bash
+EXISTS nonexistent
+```
+
+**Response:**
+```
+(integer) 0
+```
+
+### Checking Multiple Keys
+
+```bash
+SET key1 "value1"
+SET key2 "value2"
+EXISTS key1 key2 key3
+```
+
+**Response:**
+```
+OK
+OK
+(integer) 2
+```
+
+### Checking Expired Keys
+
+```bash
+SET mykey "value"
+EXPIRE mykey 1
+# Wait 1 second
+EXISTS mykey
+```
+
+**Response:**
+```
+OK
+(integer) 1
+(integer) 0
+```
+
+## Notes
+
+- Returns `1` if the key exists, `0` if it doesn't
+- When checking multiple keys, returns the count of existing keys
+- Expired keys are considered non-existent
+- Works with both string and list keys
+
+## Use Cases
+
+- **Conditional Operations**: Check if a key exists before performing operations
+- **Validation**: Verify that required keys are present
+- **Monitoring**: Count how many keys of a certain pattern exist
+- **Cache Checks**: Verify if cached data exists before fetching
+
+## Related Commands
+
+- [GET](/docs/commands/get) - Get a key's value
+- [SET](/docs/commands/set) - Set a key's value
+- [DEL](/docs/commands/del) - Delete a key
+

@@ -1,0 +1,49 @@
+---
+title: Commands
+description: All available commands in ECHO DB
+---
+
+# Commands
+
+ECHO DB supports a subset of Redis commands. Each command is documented in detail with examples and usage patterns.
+
+## String Commands
+
+- [SET](/docs/commands/set) - Set a key to hold a string value
+- [GET](/docs/commands/get) - Get the value of a key
+- [DEL](/docs/commands/del) - Delete one or more keys
+- [EXISTS](/docs/commands/exists) - Check if one or more keys exist
+
+## List Commands
+
+- [LPUSH](/docs/commands/lpush) - Prepend one or more values to a list
+- [RPUSH](/docs/commands/rpush) - Append one or more values to a list
+- [LPOP](/docs/commands/lpop) - Remove and return elements from the left of a list
+- [RPOP](/docs/commands/rpop) - Remove and return elements from the right of a list
+- [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
+- [LLEN](/docs/commands/llen) - Get the length of a list
+
+## Expiry Commands
+
+- [EXPIRE](/docs/commands/expire) - Set a timeout on a key
+- [TTL](/docs/commands/ttl) - Get the remaining time to live of a key
+- [PERSIST](/docs/commands/persist) - Remove the expiration from a key
+
+## Connection Commands
+
+- [PING](/docs/commands/ping) - Test the connection
+- [ECHO](/docs/commands/echo) - Echo the given string
+
+## Command Format
+
+All commands use the RESP (Redis Serialization Protocol) format. You can use any Redis client or `redis-cli` to interact with ECHO DB.
+
+## Getting Help
+
+For detailed information about each command, click on the command name above. Each command page includes:
+- Syntax and description
+- Arguments and return values
+- Examples
+- Use cases
+- Related commands
+
