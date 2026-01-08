@@ -1,11 +1,7 @@
 ---
 title: GET
-description: Get the value of a key
+description: Get the value of a key.
 ---
-
-# GET
-
-Gets the value of a key.
 
 ## Syntax
 
@@ -24,6 +20,7 @@ The `GET` command retrieves the string value associated with a key. If the key d
 ## Return Value
 
 Returns a Bulk String:
+
 - The value of the key if it exists
 - `nil` (null bulk string) if the key does not exist
 
@@ -37,6 +34,7 @@ GET mykey
 ```
 
 **Response:**
+
 ```
 OK
 "Hello ECHO DB"
@@ -49,6 +47,7 @@ GET nonexistent
 ```
 
 **Response:**
+
 ```
 (nil)
 ```
@@ -62,6 +61,7 @@ GET mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -86,5 +86,3 @@ OK
 - [SET](/docs/commands/set) - Set a key's value
 - [EXISTS](/docs/commands/exists) - Check if a key exists
 - [DEL](/docs/commands/del) - Delete a key
-
-

@@ -1,11 +1,7 @@
 ---
 title: DEL
-description: Delete one or more keys
+description: Delete one or more keys.
 ---
-
-# DEL
-
-Deletes one or more keys.
 
 ## Syntax
 
@@ -15,7 +11,7 @@ DEL key [key ...]
 
 ## Description
 
-The `DEL` command removes one or more keys from ECHO DB. If a key does not exist, it is ignored. The command returns the number of keys that were actually removed.
+The `DEL` command removes one or more keys from Echo DB. If a key does not exist, it is ignored. The command returns the number of keys that were actually removed.
 
 ## Arguments
 
@@ -35,6 +31,7 @@ DEL mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -50,6 +47,7 @@ DEL key1 key2 key3
 ```
 
 **Response:**
+
 ```
 OK
 OK
@@ -64,6 +62,7 @@ DEL nonexistent1 nonexistent2
 ```
 
 **Response:**
+
 ```
 (integer) 0
 ```
@@ -76,6 +75,7 @@ DEL key1 nonexistent key2
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -100,5 +100,3 @@ OK
 - [SET](/docs/commands/set) - Set a key's value
 - [GET](/docs/commands/get) - Get a key's value
 - [EXISTS](/docs/commands/exists) - Check if a key exists
-
-

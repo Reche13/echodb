@@ -1,11 +1,7 @@
 ---
 title: PERSIST
-description: Remove the expiration from a key
+description: Removes the expiration from a key, making it persist indefinitely.
 ---
-
-# PERSIST
-
-Removes the expiration from a key, making it persist indefinitely.
 
 ## Syntax
 
@@ -24,6 +20,7 @@ The `PERSIST` command removes the expiration from a key, making it persist indef
 ## Return Value
 
 Returns an Integer:
+
 - `1` if the expiration was removed successfully
 - `0` if the key doesn't exist or has no expiration set
 
@@ -39,6 +36,7 @@ TTL mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -54,6 +52,7 @@ PERSIST mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 0
@@ -66,6 +65,7 @@ PERSIST nonexistent
 ```
 
 **Response:**
+
 ```
 (integer) 0
 ```
@@ -80,6 +80,7 @@ PERSIST mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -106,5 +107,3 @@ OK
 - [EXPIRE](/docs/commands/expire) - Set a timeout on a key
 - [TTL](/docs/commands/ttl) - Get the remaining time to live of a key
 - [SET](/docs/commands/set) - Set a key's value
-
-

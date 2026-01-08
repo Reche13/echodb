@@ -1,11 +1,7 @@
 ---
 title: TTL
-description: Get the remaining time to live of a key
+description: Returns the remaining time to live (TTL) of a key in seconds.
 ---
-
-# TTL
-
-Returns the remaining time to live (TTL) of a key in seconds.
 
 ## Syntax
 
@@ -24,6 +20,7 @@ The `TTL` command returns the remaining time to live of a key in seconds. It ret
 ## Return Value
 
 Returns an Integer:
+
 - **Positive integer**: The remaining TTL in seconds
 - **`-1`**: The key exists but has no expiration set
 - **`-2`**: The key does not exist
@@ -39,6 +36,7 @@ TTL mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -53,6 +51,7 @@ TTL mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) -1
@@ -65,6 +64,7 @@ TTL nonexistent
 ```
 
 **Response:**
+
 ```
 (integer) -2
 ```
@@ -80,6 +80,7 @@ TTL mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -97,6 +98,7 @@ TTL mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -105,11 +107,11 @@ OK
 
 ## Return Value Meanings
 
-| Value | Meaning |
-|-------|---------|
-| Positive integer | Remaining TTL in seconds |
-| `-1` | Key exists but has no expiration |
-| `-2` | Key does not exist (or has expired) |
+| Value            | Meaning                             |
+| ---------------- | ----------------------------------- |
+| Positive integer | Remaining TTL in seconds            |
+| `-1`             | Key exists but has no expiration    |
+| `-2`             | Key does not exist (or has expired) |
 
 ## Notes
 
@@ -131,5 +133,3 @@ OK
 - [EXPIRE](/docs/commands/expire) - Set a timeout on a key
 - [PERSIST](/docs/commands/persist) - Remove the expiration from a key
 - [EXISTS](/docs/commands/exists) - Check if a key exists
-
-

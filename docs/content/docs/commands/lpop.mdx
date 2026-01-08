@@ -1,11 +1,7 @@
 ---
 title: LPOP
-description: Remove and return elements from the left of a list
+description: Removes and returns one or more elements from the left (head) of a list.
 ---
-
-# LPOP
-
-Removes and returns one or more elements from the left (head) of a list.
 
 ## Syntax
 
@@ -25,6 +21,7 @@ The `LPOP` command removes and returns elements from the left (head) of a list. 
 ## Return Value
 
 Returns an Array:
+
 - An array of popped elements (in the order they were in the list)
 - An empty array if the key doesn't exist or the list is empty
 
@@ -38,6 +35,7 @@ LPOP mylist
 ```
 
 **Response:**
+
 ```
 (integer) 3
 "c"
@@ -51,6 +49,7 @@ LPOP mylist 2
 ```
 
 **Response:**
+
 ```
 (integer) 4
 1) "a"
@@ -64,6 +63,7 @@ LPOP emptylist
 ```
 
 **Response:**
+
 ```
 (nil)
 ```
@@ -76,6 +76,7 @@ LPOP mylist 5
 ```
 
 **Response:**
+
 ```
 (integer) 2
 1) "a"
@@ -104,5 +105,3 @@ LPOP mylist 5
 - [RPOP](/docs/commands/rpop) - Remove and return elements from the right
 - [LPUSH](/docs/commands/lpush) - Prepend values to a list
 - [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
-
-

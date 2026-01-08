@@ -1,11 +1,7 @@
 ---
 title: LPUSH
-description: Prepend one or more values to a list
+description: Prepend one or more values to a list.
 ---
-
-# LPUSH
-
-Prepends one or more values to a list.
 
 ## Syntax
 
@@ -35,6 +31,7 @@ LPUSH mylist "item1"
 ```
 
 **Response:**
+
 ```
 (integer) 1
 ```
@@ -46,6 +43,7 @@ LPUSH mylist "item3" "item2" "item1"
 ```
 
 **Response:**
+
 ```
 (integer) 3
 ```
@@ -60,6 +58,7 @@ LRANGE mylist 0 -1
 ```
 
 **Response:**
+
 ```
 (integer) 3
 1) "a"
@@ -75,6 +74,7 @@ LRANGE newlist 0 -1
 ```
 
 **Response:**
+
 ```
 (integer) 1
 1) "first"
@@ -101,5 +101,3 @@ LRANGE newlist 0 -1
 - [LPOP](/docs/commands/lpop) - Remove and return values from the left
 - [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
 - [LLEN](/docs/commands/llen) - Get the length of a list
-
-

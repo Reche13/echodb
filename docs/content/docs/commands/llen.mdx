@@ -1,11 +1,7 @@
 ---
 title: LLEN
-description: Get the length of a list
+description: Returns the length of a list.
 ---
-
-# LLEN
-
-Returns the length of a list.
 
 ## Syntax
 
@@ -35,6 +31,7 @@ LLEN mylist
 ```
 
 **Response:**
+
 ```
 (integer) 3
 (integer) 3
@@ -47,6 +44,7 @@ LLEN nonexistent
 ```
 
 **Response:**
+
 ```
 (integer) 0
 ```
@@ -61,6 +59,7 @@ LLEN mylist
 ```
 
 **Response:**
+
 ```
 (integer) 3
 (integer) 3
@@ -77,6 +76,7 @@ LLEN mylist
 ```
 
 **Response:**
+
 ```
 (integer) 1
 "item"
@@ -102,5 +102,3 @@ LLEN mylist
 - [LPUSH](/docs/commands/lpush) - Prepend values to a list
 - [RPUSH](/docs/commands/rpush) - Append values to a list
 - [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
-
-

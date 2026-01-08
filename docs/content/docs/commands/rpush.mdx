@@ -1,11 +1,7 @@
 ---
 title: RPUSH
-description: Append one or more values to a list
+description: Append one or more values to a list.
 ---
-
-# RPUSH
-
-Appends one or more values to a list.
 
 ## Syntax
 
@@ -35,6 +31,7 @@ RPUSH mylist "item1"
 ```
 
 **Response:**
+
 ```
 (integer) 1
 ```
@@ -46,6 +43,7 @@ RPUSH mylist "item1" "item2" "item3"
 ```
 
 **Response:**
+
 ```
 (integer) 3
 ```
@@ -58,6 +56,7 @@ LRANGE mylist 0 -1
 ```
 
 **Response:**
+
 ```
 (integer) 3
 1) "a"
@@ -73,6 +72,7 @@ LRANGE newlist 0 -1
 ```
 
 **Response:**
+
 ```
 (integer) 1
 1) "first"
@@ -99,5 +99,3 @@ LRANGE newlist 0 -1
 - [RPOP](/docs/commands/rpop) - Remove and return values from the right
 - [LRANGE](/docs/commands/lrange) - Get a range of elements from a list
 - [LLEN](/docs/commands/llen) - Get the length of a list
-
-

@@ -1,11 +1,7 @@
 ---
 title: EXISTS
-description: Check if one or more keys exist
+description: Checks if one or more keys exist.
 ---
-
-# EXISTS
-
-Checks if one or more keys exist.
 
 ## Syntax
 
@@ -15,7 +11,7 @@ EXISTS key [key ...]
 
 ## Description
 
-The `EXISTS` command checks if the specified key(s) exist in ECHO DB. It returns the number of keys that exist. Keys that have expired are considered non-existent.
+The `EXISTS` command checks if the specified key(s) exist in Echo DB. It returns the number of keys that exist. Keys that have expired are considered non-existent.
 
 ## Arguments
 
@@ -35,6 +31,7 @@ EXISTS mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -47,6 +44,7 @@ EXISTS nonexistent
 ```
 
 **Response:**
+
 ```
 (integer) 0
 ```
@@ -60,6 +58,7 @@ EXISTS key1 key2 key3
 ```
 
 **Response:**
+
 ```
 OK
 OK
@@ -76,6 +75,7 @@ EXISTS mykey
 ```
 
 **Response:**
+
 ```
 OK
 (integer) 1
@@ -101,5 +101,3 @@ OK
 - [GET](/docs/commands/get) - Get a key's value
 - [SET](/docs/commands/set) - Set a key's value
 - [DEL](/docs/commands/del) - Delete a key
-
-
