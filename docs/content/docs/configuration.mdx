@@ -1,11 +1,9 @@
 ---
 title: Configuration
-description: Configure ECHO DB to suit your needs
+description: Configure Echo DB to suit your needs
 ---
 
-# Configuration
-
-ECHO DB can be configured using a YAML configuration file. Create a `config.yaml` file in the `configs/` directory or in the current working directory.
+Echo DB can be configured using a YAML configuration file. Create a `config.yaml` file in the `configs/` directory or in the current working directory.
 
 ## Configuration File Structure
 
@@ -39,9 +37,10 @@ The network interface to bind to.
 - **Description**: IP address or hostname to listen on. Use `0.0.0.0` to listen on all interfaces, or `127.0.0.1` to listen only on localhost.
 
 **Example:**
+
 ```yaml
 server:
-  host: "0.0.0.0"  # Listen on all interfaces
+  host: "0.0.0.0" # Listen on all interfaces
   # host: "127.0.0.1"  # Listen only on localhost
 ```
 
@@ -54,9 +53,10 @@ The port number to listen on.
 - **Description**: TCP port for client connections.
 
 **Example:**
+
 ```yaml
 server:
-  port: 6380  # Default port
+  port: 6380 # Default port
 ```
 
 ## Persistence Configuration
@@ -70,9 +70,10 @@ Enable or disable persistence.
 - **Description**: When set to `false`, no data is persisted and all data is lost on server restart.
 
 **Example:**
+
 ```yaml
 persistence:
-  enabled: true   # Enable persistence
+  enabled: true # Enable persistence
   # enabled: false  # Disable persistence
 ```
 
@@ -85,9 +86,10 @@ Directory for storing persistence files.
 - **Description**: Path to directory where AOF files are stored. Can be relative or absolute.
 
 **Example:**
+
 ```yaml
 persistence:
-  data_dir: "./data"              # Relative path
+  data_dir: "./data" # Relative path
   # data_dir: "/var/lib/echodb"     # Absolute path
 ```
 
@@ -100,6 +102,7 @@ Enable or disable AOF persistence.
 - **Description**: When set to `false`, AOF logging is turned off even if persistence is enabled.
 
 **Example:**
+
 ```yaml
 persistence:
   aof:
@@ -115,10 +118,11 @@ AOF filename.
 - **Description**: Name of the AOF file. The file is stored in the `data_dir` directory.
 
 **Example:**
+
 ```yaml
 persistence:
   aof:
-    file: "echo.aof"  # Default filename
+    file: "echo.aof" # Default filename
 ```
 
 ### `persistence.aof.sync_mode`
@@ -137,10 +141,11 @@ AOF sync mode.
 - **`no`**: No automatic syncing. Maximum performance, higher risk of data loss.
 
 **Example:**
+
 ```yaml
 persistence:
   aof:
-    sync_mode: "periodic"  # Recommended
+    sync_mode: "periodic" # Recommended
     # sync_mode: "always"   # Maximum durability
     # sync_mode: "no"       # Maximum performance
 ```
@@ -154,18 +159,19 @@ Flush interval for periodic sync mode.
 - **Description**: How often to sync to disk when using `periodic` sync mode. Format: number followed by unit (s for seconds, m for minutes, h for hours).
 
 **Example:**
+
 ```yaml
 persistence:
   aof:
     sync_mode: "periodic"
-    flush_interval: "5s"    # Sync every 5 seconds
+    flush_interval: "5s" # Sync every 5 seconds
     # flush_interval: "1s"   # Sync every second
     # flush_interval: "30s"  # Sync every 30 seconds
 ```
 
 ## Configuration File Locations
 
-ECHO DB searches for configuration files in the following order:
+Echo DB searches for configuration files in the following order:
 
 1. `./configs/config.yaml`
 2. `./config.yaml`
@@ -197,7 +203,7 @@ persistence:
   aof:
     enabled: true
     file: "dev.aof"
-    sync_mode: "no"  # Fast for development
+    sync_mode: "no" # Fast for development
 ```
 
 ### Production
@@ -220,5 +226,4 @@ persistence:
 ## Next Steps
 
 - [Commands](/docs/commands) - Learn available commands
-- [Connecting to ECHO DB](/docs/connecting) - Connect to your instance
-
+- [Connecting to Echo DB](/docs/connecting) - Connect to your instance

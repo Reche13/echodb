@@ -1,25 +1,22 @@
 ---
 title: Overview
-description: ECHO DB - A lightweight in-memory database
+description: Echo DB - A lightweight in-memory database
 ---
 
-ECHO DB is a high-performance, lightweight, Redis-compatible in-memory data store **built in Go (Golang)** on the RESP (Redis Serialization Protocol). Designed for speed and simplicity, it provides a fast, thread-safe solution for applications that require real-time data access.
+Echo DB is a high-performance, lightweight, Redis-compatible in-memory data store **built in Go (Golang)** on the RESP (Redis Serialization Protocol). Designed for speed and simplicity, it provides a fast, thread-safe solution for applications that require real-time data access.
 
 Works seamlessly with existing Redis clients and tools, making it ideal for caching, session storage, queues, and development environments.
 
 ## Core Features
 
-ECHO DB supports:
-
 - **String operations**: Store and retrieve string values
 - **List operations**: Work with ordered collections of strings
 - **Key expiration**: Set time-to-live (TTL) on keys
-- **Persistence**: Optional AOF (Append-Only File) persistence
+- **Persistence**: AOF (Append-Only File) persistence
 - **Thread-safe operations**: Safe for concurrent access
+- **Configurability**: YAML file based configs
 
 ## Use Cases
-
-ECHO DB can be used for:
 
 - **Caching**: Fast key-value caching for web applications
 - **Session storage**: Store user sessions with automatic expiration
@@ -29,14 +26,14 @@ ECHO DB can be used for:
 
 ## Getting Started
 
-ECHO DB can be installed using multiple different ways, which can be seen [here](/docs/installation).
+Echo DB can be installed using multiple different ways, which can be seen [here](/docs/installation).
 
-To connect to ECHO DB, you can use any Redis client or `redis-cli`. Learn more about [connecting to ECHO DB](/docs/connecting).
+To connect to Echo DB, you can use any Redis client or `redis-cli`. Learn more about [connecting to EchoCHO DB](/docs/connecting).
 
 ## Commands
 
-ECHO DB supports a subset of Redis commands. See the [Commands](/docs/commands) section for detailed documentation on each command.
+Echo DB supports a subset of Redis commands. See the [Commands](/docs/commands) section for detailed documentation on each command.
 
 ## Configuration
 
-Configure ECHO DB to suit your needs. Learn about all configuration options in the [Configuration](/docs/configuration) section.
+Configure Echo DB to suit your needs. Learn about all configuration options in the [Configuration](/docs/configuration) section.

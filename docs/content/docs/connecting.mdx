@@ -1,9 +1,7 @@
 ---
-title: Connecting to ECHO DB
-description: Connect to ECHO DB using redis-cli or any Redis client
+title: Connecting to Echo DB
+description: Connect to Echo DB using redis-cli or any Redis client
 ---
-
-# Connecting to ECHO DB
 
 ECHO DB can be connected to using any Redis client or `redis-cli`, since it implements the RESP protocol. Here are examples for popular languages.
 
@@ -35,21 +33,21 @@ npm install ioredis
 ```
 
 ```typescript
-import Redis from 'ioredis';
+import Redis from "ioredis";
 
 const redis = new Redis({
-  host: 'localhost',
+  host: "localhost",
   port: 6380,
 });
 
 // Set and get
-await redis.set('mykey', 'myvalue');
-const value = await redis.get('mykey');
+await redis.set("mykey", "myvalue");
+const value = await redis.get("mykey");
 console.log(value); // Output: myvalue
 
 // Lists
-await redis.lpush('mylist', 'item1', 'item2');
-const items = await redis.lrange('mylist', 0, -1);
+await redis.lpush("mylist", "item1", "item2");
+const items = await redis.lrange("mylist", 0, -1);
 console.log(items); // Output: ['item2', 'item1']
 ```
 
@@ -60,11 +58,11 @@ npm install redis
 ```
 
 ```typescript
-import { createClient } from 'redis';
+import { createClient } from "redis";
 
 const client = createClient({
   socket: {
-    host: 'localhost',
+    host: "localhost",
     port: 6380,
   },
 });
@@ -72,8 +70,8 @@ const client = createClient({
 await client.connect();
 
 // Set and get
-await client.set('mykey', 'myvalue');
-const value = await client.get('mykey');
+await client.set("mykey", "myvalue");
+const value = await client.get("mykey");
 console.log(value); // Output: myvalue
 
 await client.disconnect();
@@ -161,4 +159,3 @@ Refer to your client library's documentation for specific options.
 
 - [Commands](/docs/commands) - Learn available commands
 - [Configuration](/docs/configuration) - Configure your connection
-
